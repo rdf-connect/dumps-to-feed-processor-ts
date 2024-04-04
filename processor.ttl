@@ -1,0 +1,108 @@
+@prefix js: <https://w3id.org/conn/js#>.
+@prefix fno: <https://w3id.org/function/ontology#>.
+@prefix fnom: <https://w3id.org/function/vocabulary/mapping#>.
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix : <https://w3id.org/conn#>.
+@prefix sh: <http://www.w3.org/ns/shacl#>.
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+
+js:DumpsToFeed a js:JsProcess;
+    js:file <./dist/index.js>;
+    js:function "processor";
+    js:location <./>;
+    js:mapping [
+        a fno:Mapping;
+        fno:parameterMapping [
+            a fnom:PositionParameterMapping;
+            fnom:functionParameter "data output channel";
+            fnom:implementationParameterPosition "0"^^xsd:int;
+        ], [
+            a fnom:PositionParameterMapping;
+            fnom:functionParameter "feedname";
+            fnom:implementationParameterPosition "1"^^xsd:int;
+        ], [
+            a fnom:PositionParameterMapping;
+            fnom:functionParameter "flush database";
+            fnom:implementationParameterPosition "2"^^xsd:int;
+        ], [
+            a fnom:PositionParameterMapping;
+            fnom:functionParameter "dump";
+            fnom:implementationParameterPosition "3"^^xsd:int;
+        ], [
+            a fnom:PositionParameterMapping;
+            fnom:functionParameter "dump strategy";
+            fnom:implementationParameterPosition "4"^^xsd:int;
+        ], [
+            a fnom:PositionParameterMapping;
+            fnom:functionParameter "focus nodes strategy";
+            fnom:implementationParameterPosition "5"^^xsd:int;
+        ], [
+            a fnom:PositionParameterMapping;
+            fnom:functionParameter "node shape IRI";
+            fnom:implementationParameterPosition "6"^^xsd:int;
+        ], [
+             a fnom:PositionParameterMapping;
+             fnom:functionParameter "node shape";
+             fnom:implementationParameterPosition "7"^^xsd:int;
+]       , [
+            a fnom:PositionParameterMapping;
+            fnom:functionParameter "focus nodes";
+            fnom:implementationParameterPosition "8"^^xsd:int;
+        ];
+    ].
+
+[ ] a sh:NodeShape;
+    sh:targetClass js:DumpsToFeed;
+    sh:property [
+        sh:class :WriterChannel;
+        sh:path js:output;
+        sh:name "data output channel";
+        sh:maxCount 1;
+        sh:minCount 1;
+    ], [
+        sh:datatype xsd:string;
+        sh:path js:feedname;
+        sh:name "feedname";
+        sh:maxCount 1;
+        sh:minCount 1;
+    ], [
+        sh:datatype xsd:boolean;
+        sh:path js:flush;
+        sh:name "flush database";
+        sh:maxCount 1;
+        sh:minCount 1;
+    ], [
+        sh:class :ReaderChannel;
+        sh:path js:dump;
+        sh:name "dump";
+        sh:maxCount 1;
+        sh:minCount 1;
+    ], [
+        sh:datatype xsd:string;
+        sh:path js:dumpStrategy;
+        sh:name "dump strategy";
+        sh:maxCount 1;
+        sh:minCount 1;
+    ], [
+        sh:datatype xsd:string;
+        sh:path js:focusNodesStrategy;
+        sh:name "focus nodes strategy";
+        sh:maxCount 1;
+        sh:minCount 1;
+    ], [
+        sh:datatype xsd:string;
+        sh:path js:nodeShapeIri;
+        sh:name "node shape IRI";
+        sh:minCount 1;
+        sh:maxCount 1;
+    ], [
+        sh:class :ReaderChannel;
+        sh:path js:nodeShape;
+        sh:name "node shape";
+        sh:maxCount 1;
+    ], [
+        sh:class :ReaderChannel;
+        sh:path js:focusNodes;
+        sh:name "focus nodes";
+        sh:maxCount 1;
+    ].
