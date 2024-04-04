@@ -10,7 +10,10 @@
     "test": "mocha",
     "build": "tsc"
   },
-  "author": "Pieter Colpaert",
+  "contributors": [
+    "Pieter Colpaert",
+    "Ieben Smessaert"
+  ],
   "license": "MIT",
   "dependencies": {
     "@ajuvercr/js-runner": "^0.1.18-alpha.0",
