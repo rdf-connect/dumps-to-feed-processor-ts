@@ -1,0 +1,48 @@
+@prefix js: <https://w3id.org/conn/js#>.
+@prefix : <https://w3id.org/conn#>.
+@prefix owl: <http://www.w3.org/2002/07/owl#>.
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+
+<> owl:imports <../node_modules/@ajuvercr/js-runner/ontology.ttl>.
+<> owl:imports <../node_modules/@ajuvercr/js-runner/channels/file.ttl>.
+<> owl:imports <../node_modules/@rdfc/shacl-processor-ts/processors.ttl>.
+<> owl:imports <../processor.ttl>.
+
+<feed/writer> a js:JsWriterChannel.
+<feed/reader> a js:JsReaderChannel.
+[ ] a js:JsChannel;
+    :reader <feed/reader>;
+    :writer <feed/writer>.
+
+<validated/writer> a :FileWriterChannel;
+                   :fileOnReplace "false";
+                   :filePath <feed.ttl>.
+
+<report/writer> a :FileWriterChannel;
+                :fileOnReplace "false";
+                :filePath <report.ttl>.
+
+<dump/reader> a :FileReaderChannel;
+              :fileOnReplace true;
+              :fileReadFirstContent true;
+              :filePath <sweden.url>.
+
+<feed/validator> a js:Validate;
+                 js:args [
+                         js:shaclPath "https://semiceu.github.io/LDES-DCAT-AP-feeds/shape.ttl#ActivityShape";
+                         js:incoming <feed/reader>;
+                         js:outgoing <validated/writer>;
+                         js:report <report/writer>;
+                         js:validationIsFatal "true"^^xsd:boolean
+                    ].
+
+[ ] a js:DumpsToFeed;
+    js:output <feed/writer>;
+    js:feedname "sweden";
+    js:flush "false";
+    js:dump <dump/reader>;
+    js:dumpStrategy "identifier";
+    js:focusNodesStrategy "extract";
+    # js:nodeShape <shape/reader>;
+    # js:focusNodes <focusNodes/reader>;
+    js:nodeShapeIri "https://semiceu.github.io/LDES-DCAT-AP-feeds/shape.ttl#ActivityShape".

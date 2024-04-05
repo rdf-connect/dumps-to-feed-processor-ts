@@ -3,3 +3,4 @@ dist/
 node_modules/
 state-of-*/
 feed.ttl
+report.ttl
