@@ -2,14 +2,22 @@
   "name": "@rdfc/dumps-to-feeds",
   "version": "1.0.0",
   "description": "Does change detection on entities in consecutive data dumps and transforms these into an ActivityStreams change feed with the entities in a named graph",
-  "main": "index.js",
+  "main": "dist/bin/dumpsToFeed.js",
+  "bin": {
+    "dumps-to-feed": "bin/dumpsToFeed.js"
+  },
   "scripts": {
     "test": "mocha",
     "build": "tsc"
   },
-  "author": "Pieter Colpaert",
+  "contributors": [
+    "Pieter Colpaert",
+    "Ieben Smessaert"
+  ],
   "license": "MIT",
   "dependencies": {
+    "@ajuvercr/js-runner": "^0.1.18-alpha.0",
+    "@comunica/query-sparql": "^3.0.1",
     "@rdfjs/normalize": "^2.0.0",
     "@rdfjs/types": "^1.1.0",
     "@types/chai": "^4.3.5",
@@ -24,10 +32,12 @@
     "n3": "^1.17.2",
     "rdf-canonize": "^4.0.1",
     "rdf-dereference": "^2.2.0",
+    "rdf-js": "^4.0.2",
     "rdf-stores": "^1.0.0",
     "ts-node": "^10.9.1"
   },
   "devDependencies": {
+    "@rdfc/shacl-processor-ts": "^0.1.1",
     "typescript": "^5.3.3"
   }
 }

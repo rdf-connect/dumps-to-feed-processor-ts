@@ -1,0 +1,33 @@
+@prefix js: <https://w3id.org/conn/js#>.
+@prefix : <https://w3id.org/conn#>.
+@prefix owl: <http://www.w3.org/2002/07/owl#>.
+
+<> owl:imports <../node_modules/@ajuvercr/js-runner/ontology.ttl>.
+<> owl:imports <../node_modules/@ajuvercr/js-runner/channels/file.ttl>.
+<> owl:imports <../processor.ttl>.
+
+#[ ] a js:JsChannel;
+#    :writer <feed/writer>.
+#
+#[ ] a js:JsChannel;
+#    :reader <dump/reader>.
+
+<feed/writer> a :FileWriterChannel;
+              :fileOnReplace "false";
+              :filePath <feed.ttl>.
+
+<dump/reader> a :FileReaderChannel;
+              :fileOnReplace true;
+              :fileReadFirstContent true;
+              :filePath <sweden.url>.
+
+[ ] a js:DumpsToFeed;
+    js:output <feed/writer>;
+    js:feedname "sweden";
+    js:flush "false";
+    js:dump <dump/reader>;
+    js:dumpStrategy "identifier";
+    js:focusNodesStrategy "extract";
+    # js:nodeShape <shape/reader>;
+    # js:focusNodes <focusNodes/reader>;
+    js:nodeShapeIri "https://semiceu.github.io/LDES-DCAT-AP-feeds/shape.ttl#ActivityShape".
