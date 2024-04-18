@@ -33,7 +33,8 @@
                          js:incoming <feed/reader>;
                          js:outgoing <validated/writer>;
                          js:report <report/writer>;
-                         js:validationIsFatal "true"^^xsd:boolean
+                         js:validationIsFatal "false"^^xsd:boolean;
+                         js:mime "application/trig"
                     ].
 
 [ ] a js:DumpsToFeed;
