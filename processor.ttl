@@ -30,7 +30,7 @@ js:DumpsToFeed a js:JsProcess;
             fnom:implementationParameterPosition "3"^^xsd:int;
         ], [
             a fnom:PositionParameterMapping;
-            fnom:functionParameter "dump strategy";
+            fnom:functionParameter "dump content type";
             fnom:implementationParameterPosition "4"^^xsd:int;
         ], [
             a fnom:PositionParameterMapping;
@@ -79,8 +79,8 @@ js:DumpsToFeed a js:JsProcess;
         sh:minCount 1;
     ], [
         sh:datatype xsd:string;
-        sh:path js:dumpStrategy;
-        sh:name "dump strategy";
+        sh:path js:dumpContentType;
+        sh:name "dump content type";
         sh:maxCount 1;
         sh:minCount 1;
     ], [

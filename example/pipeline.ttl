@@ -6,18 +6,13 @@
 <> owl:imports <../node_modules/@ajuvercr/js-runner/channels/file.ttl>.
 <> owl:imports <../processor.ttl>.
 
-#[ ] a js:JsChannel;
-#    :writer <feed/writer>.
-#
-#[ ] a js:JsChannel;
-#    :reader <dump/reader>.
 
 <feed/writer> a :FileWriterChannel;
               :fileOnReplace "false";
               :filePath <feed.ttl>.
 
 <dump/reader> a :FileReaderChannel;
-              :fileOnReplace true;
+              :fileOnReplace false;  # Read only once
               :fileReadFirstContent true;
               :filePath <sweden.url>.
 
@@ -26,7 +21,7 @@
     js:feedname "sweden";
     js:flush "false";
     js:dump <dump/reader>;
-    js:dumpStrategy "identifier";
+    js:dumpContentType "identifier";
     js:focusNodesStrategy "extract";
     # js:nodeShape <shape/reader>;
     # js:focusNodes <focusNodes/reader>;

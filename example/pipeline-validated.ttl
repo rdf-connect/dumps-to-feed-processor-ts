@@ -16,7 +16,7 @@
 
 <validated/writer> a :FileWriterChannel;
                    :fileOnReplace "false";
-                   :filePath <feed.ttl>.
+                   :filePath <feed-validated.ttl>.
 
 <report/writer> a :FileWriterChannel;
                 :fileOnReplace "false";
@@ -42,7 +42,7 @@
     js:feedname "sweden";
     js:flush "false";
     js:dump <dump/reader>;
-    js:dumpStrategy "identifier";
+    js:dumpContentType "identifier";
     js:focusNodesStrategy "extract";
     # js:nodeShape <shape/reader>;
     # js:focusNodes <focusNodes/reader>;

@@ -3,16 +3,18 @@ import {CBDShapeExtractor} from "extract-cbd-shape";
 import {createHash} from 'node:crypto';
 import {RdfStore} from 'rdf-stores';
 import {DataFactory} from 'rdf-data-factory';
-import {Parser, Writer as NWriter} from 'n3';
+import {Writer as NWriter} from 'n3';
 import {NamedNode, Term} from "@rdfjs/types";
 import type {Stream, Writer} from "@ajuvercr/js-runner";
 import {Level} from "level";
 import {QueryEngine} from "@comunica/query-sparql";
+import rdfParser from "rdf-parse";
+import arrayifyStream from "arrayify-stream";
+import streamifyString from "streamify-string";
 
 const {canonize} = require('rdf-canonize');
 
 const df: DataFactory = new DataFactory();
-const parser = new Parser();
 const engine = new QueryEngine();
 
 // Helper function to make loading a quad stream in a store a promise
@@ -42,18 +44,15 @@ function processActivity(writer: Writer<string>, quads: Array<any>, type: NamedN
   });
 }
 
-async function dumpToRdfStore(dump: string, dumpStrategy: 'identifier' | 'quads'): Promise<RdfStore> {
+async function dumpToRdfStore(dump: string, dumpContentType: string): Promise<RdfStore> {
   const store = RdfStore.createDefault();
-  switch (dumpStrategy) {
-    case 'identifier':
-      const {data} = await rdfDereferencer.dereference(dump, {localFiles: true});
-      await loadQuadStreamInStore(store, data);
-      break;
-    case 'quads':
-      for (const quad of parser.parse(dump)) {
-        store.addQuad(quad);
-      }
-      break;
+  if (dumpContentType === 'identifier') {
+    const {data} = await rdfDereferencer.dereference(dump, {localFiles: true});
+    await loadQuadStreamInStore(store, data);
+  } else {
+    for (const quad of await arrayifyStream(rdfParser.parse(streamifyString(dump), {contentType: dumpContentType}))) {
+      store.addQuad(quad);
+    }
   }
   return store;
 }
@@ -97,7 +96,7 @@ async function findFocusNodes(store: RdfStore, query?: string): Promise<Term[]> 
  * @param feedname the name of the feed
  * @param flush whether to flush the database
  * @param dump a filename, url, or serialized quads containing the data
- * @param dumpStrategy 'identifier'|'quads'. Use 'identifier' in case of filename or url, 'quads' in case of serialized quads
+ * @param dumpContentType the content type of the dump. Use 'identifier' in case of filename or url to be dereferenced
  * @param focusNodesStrategy 'extract'|'sparql'|'iris'. Use 'extract' in case of automatic extraction (we will use a SPARQL query to find and extract all nodes of one of the standalone entity types), 'sparql' in case of a provided SPARQL query, 'iris' in case of comma separated IRIs (NamedNode values)
  * @param nodeShapeIri if no nodeShapeStore was set, it will dereference the nodeShapeIri.
  * @param nodeShape serialized quads containing the node shape
@@ -108,7 +107,7 @@ export async function main(
   feedname: string,
   flush: boolean,
   dump: string,
-  dumpStrategy: 'identifier' | 'quads',
+  dumpContentType: string,
   focusNodesStrategy: 'extract' | 'sparql' | 'iris',
   nodeShapeIri: string,
   nodeShape?: string,
@@ -118,7 +117,7 @@ export async function main(
   if (flush) {
     await db.clear();
   }
-  const store = await dumpToRdfStore(dump, dumpStrategy);
+  const store = await dumpToRdfStore(dump, dumpContentType);
 
   let nodeShapeStore;
   if (nodeShape) {
@@ -181,7 +180,7 @@ export async function main(
  * @param feedname the name of the feed
  * @param flush whether to flush the database
  * @param dump a filename, url, or serialized quads containing the data
- * @param dumpStrategy 'identifier'|'quads'. Use 'identifier' in case of filename or url, 'quads' in case of serialized quads
+ * @param dumpContentType the content type of the dump. Use 'identifier' in case of filename or url to be dereferenced
  * @param focusNodesStrategy 'extract'|'sparql'|'iris'. Use 'extract' in case of automatic extraction (we will use a SPARQL query to find and extract all nodes of one of the standalone entity types), 'sparql' in case of a provided SPARQL query, 'iris' in case of comma separated IRIs (NamedNode values)
  * @param nodeShapeIri if no nodeShapeStore was set, it will dereference the nodeShapeIri.
  * @param nodeShape quad stream containing the node shape
@@ -192,7 +191,7 @@ export async function processor(
   feedname: string,
   flush: boolean,
   dump: Stream<string>,
-  dumpStrategy: 'identifier' | 'quads',
+  dumpContentType: string,
   focusNodesStrategy: 'extract' | 'sparql' | 'iris',
   nodeShapeIri: string,
   nodeShape?: Stream<string>,
@@ -213,7 +212,7 @@ export async function processor(
       const nextDump = dumpBuffer.shift()!;
       const nextNodeShape = nodeShapeBuffer.shift();
       const nextFocusNodes = focusNodesBuffer.shift();
-      await main(writer, feedname, flush, nextDump, dumpStrategy, focusNodesStrategy, nodeShapeIri, nextNodeShape, nextFocusNodes);
+      await main(writer, feedname, flush, nextDump, dumpContentType, focusNodesStrategy, nodeShapeIri, nextNodeShape, nextFocusNodes);
     }
   }
 
