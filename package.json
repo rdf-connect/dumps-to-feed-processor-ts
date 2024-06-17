@@ -16,7 +16,7 @@
   ],
   "license": "MIT",
   "dependencies": {
-    "@ajuvercr/js-runner": "^0.1.18-alpha.0",
+    "@rdfc/js-runner": "^0.2.1",
     "@comunica/query-sparql": "^3.0.1",
     "@rdfjs/normalize": "^2.0.0",
     "@rdfjs/types": "^1.1.0",
