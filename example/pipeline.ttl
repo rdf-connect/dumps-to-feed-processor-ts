@@ -12,7 +12,7 @@
               :filePath <feed.ttl>.
 
 <dump/reader> a :FileReaderChannel;
-              :fileOnReplace false;  # Read only once
+              :fileOnReplace true;
               :fileReadFirstContent true;
               :filePath <sweden.url>.
 

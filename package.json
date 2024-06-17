@@ -16,8 +16,8 @@
   ],
   "license": "MIT",
   "dependencies": {
-    "@rdfc/js-runner": "^0.2.1",
     "@comunica/query-sparql": "^3.0.1",
+    "@rdfc/js-runner": "^0.2.1",
     "@rdfjs/normalize": "^2.0.0",
     "@rdfjs/types": "^1.1.0",
     "@types/chai": "^4.3.5",
@@ -36,11 +36,13 @@
     "rdf-js": "^4.0.2",
     "rdf-parse": "^2.3.3",
     "rdf-stores": "^1.0.0",
+    "streamify-array": "^1.0.1",
     "streamify-string": "^1.0.1",
     "ts-node": "^10.9.1"
   },
   "devDependencies": {
     "@rdfc/shacl-processor-ts": "^0.1.2",
+    "@types/streamify-array": "^1.0.3",
     "@types/streamify-string": "^1.0.4",
     "typescript": "^5.3.3"
   }

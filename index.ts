@@ -4,13 +4,14 @@ import {createHash} from 'node:crypto';
 import {RdfStore} from 'rdf-stores';
 import {DataFactory} from 'rdf-data-factory';
 import {Writer as NWriter} from 'n3';
-import {NamedNode, Term} from "@rdfjs/types";
-import type {Stream, Writer} from "@ajuvercr/js-runner";
+import {NamedNode, ResultStream, Term} from "@rdfjs/types";
+import type {Stream, Writer} from "@rdfc/js-runner";
 import {Level} from "level";
 import {QueryEngine} from "@comunica/query-sparql";
 import rdfParser from "rdf-parse";
 import arrayifyStream from "arrayify-stream";
 import streamifyString from "streamify-string";
+import streamifyArray from "streamify-array";
 
 const {canonize} = require('rdf-canonize');
 
@@ -57,7 +58,7 @@ async function dumpToRdfStore(dump: string, dumpContentType: string): Promise<Rd
   return store;
 }
 
-async function focusNodesToSubjects(store: RdfStore, focusNodesStrategy: 'extract' | 'sparql' | 'iris', focusNodes?: string): Promise<Term[]> {
+async function focusNodesToSubjects(store: RdfStore, focusNodesStrategy: 'extract' | 'sparql' | 'iris', focusNodes?: string): Promise<ResultStream<Term>> {
   switch (focusNodesStrategy) {
     case 'extract':
       return findFocusNodes(store);
@@ -66,13 +67,13 @@ async function focusNodesToSubjects(store: RdfStore, focusNodesStrategy: 'extrac
     case 'iris':
       if (!focusNodes) {
         console.error(`focusNodesStrategy is set to '${focusNodesStrategy}' but no focusNodes were provided`);
-        return [];
+        return streamifyArray([]);
       }
-      return focusNodes.split(',').map((iri) => df.namedNode(iri));
+      return streamifyArray(focusNodes.split(',').map((iri) => df.namedNode(iri)));
   }
 }
 
-async function findFocusNodes(store: RdfStore, query?: string): Promise<Term[]> {
+async function findFocusNodes(store: RdfStore, query?: string): Promise<ResultStream<Term>> {
   query = query || `
   PREFIX dcat: <http://www.w3.org/ns/dcat#>
   PREFIX foaf: <http://xmlns.com/foaf/0.1/>
@@ -86,9 +87,10 @@ async function findFocusNodes(store: RdfStore, query?: string): Promise<Term[]> 
   }
   `;
 
-  const bindings = await (await engine.queryBindings(query, {sources: [store]})).toArray();
+  const bindingsStream = await engine.queryBindings(query, {sources: [store]});
+
   // Map bindings to their terms and filter out undefined values
-  return bindings.map((binding) => binding.get('entity')).filter((term) => term) as Term[];
+  return (bindingsStream.map((bindings) => bindings.get('entity')).filter((term) => term !== undefined)) as ResultStream<Term>;
 }
 
 /**
@@ -126,10 +128,10 @@ export async function main(
 
   // Create a shape for the entities in the stream and let’s extract them accordingly
   const extractor = new CBDShapeExtractor(nodeShapeStore);
-  const subjects = await focusNodesToSubjects(store, focusNodesStrategy, focusNodes);
+  const subjectsStream = await focusNodesToSubjects(store, focusNodesStrategy, focusNodes);
   const nodeShapeIriTerm = df.namedNode(nodeShapeIri);
 
-  for (let subject of subjects) {
+  subjectsStream.on('data', async (subject: Term) => {
     if (subject.termType === 'BlankNode') {
       // Let's skip this entity
       console.error("An entity (type " + store.getQuads(subject, df.namedNode("http://www.w3.org/1999/02/22-rdf-syntax-ns#type"), null)[0].object.value + ") cannot be a blank node!");
@@ -162,17 +164,24 @@ export async function main(
         await db.put(subject.value, hashString);
       }
     }
-  }
-  // We still need to detect deletions: something that has been in our leveldb previously, but isn't anymore
-  let keys = await db.keys().all();
-  // Loop over the keys and check whether they are set in the store. If there are keys that weren't set before, it's a deletion!
-  for (let key of keys) {
-    if (store.getQuads(df.namedNode(key), null, null).length === 0) {
-      processActivity(writer, [], df.namedNode("https://www.w3.org/ns/activitystreams#Delete"), df.namedNode(key), "deletion-" + encodeURIComponent(new Date().toISOString()));
-      // and remove the entry in leveldb now, so it doesn't appear as removed twice in the feed on the next run
-      await db.del(key);
+  });
+
+  subjectsStream.on('end', async () => {
+    // We still need to detect deletions: something that has been in our leveldb previously, but isn't anymore
+    let keys = await db.keys().all();
+    // Loop over the keys and check whether they are set in the store. If there are keys that weren't set before, it's a deletion!
+    for (let key of keys) {
+      if (store.getQuads(df.namedNode(key), null, null).length === 0) {
+        processActivity(writer, [], df.namedNode("https://www.w3.org/ns/activitystreams#Delete"), df.namedNode(key), "deletion-" + encodeURIComponent(new Date().toISOString()));
+        // and remove the entry in leveldb now, so it doesn't appear as removed twice in the feed on the next run
+        await db.del(key);
+      }
     }
-  }
+  });
+
+  subjectsStream.on('error', (e) => {
+    console.error(e);
+  });
 }
 
 /**
@@ -216,20 +225,20 @@ export async function processor(
     }
   }
 
-  dump.data(async (data) => {
+  dump.data(async (data: string) => {
     dumpBuffer.push(data);
     await tryProcessing();
   });
 
   if (listenToNodeShape) {
-    nodeShape!.data(async (data) => {
+    nodeShape!.data(async (data: string) => {
       nodeShapeBuffer.push(data);
       await tryProcessing();
     });
   }
 
   if (listenToFocusNodes) {
-    focusNodes!.data(async (data) => {
+    focusNodes!.data(async (data: string) => {
       focusNodesBuffer.push(data);
       await tryProcessing();
     });
