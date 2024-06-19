@@ -1,5 +1,5 @@
 {
-  "name": "@rdfc/dumps-to-feeds",
+  "name": "@rdfc/dumps-to-feed-processor-ts",
   "version": "1.0.0",
   "description": "Does change detection on entities in consecutive data dumps and transforms these into an ActivityStreams change feed with the entities in a named graph",
   "main": "dist/bin/dumpsToFeed.js",
@@ -9,6 +9,10 @@
   "scripts": {
     "test": "mocha",
     "build": "tsc"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rdf-connect/dumps-to-feed-processor-ts.git"
   },
   "contributors": [
     "Pieter Colpaert",
