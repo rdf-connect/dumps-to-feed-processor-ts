@@ -30,7 +30,6 @@ function processActivity(writer: Writer<string>, quads: Array<any>, type: NamedN
   // Create new relative IRI for the activity based on the hash of the activity
   let subject = df.namedNode("#" + hash);
   nWriter.addQuads([
-    df.quad(df.namedNode("feed"), df.namedNode("https://w3id.org/sds#member"), subject),
     df.quad(subject, df.namedNode("http://www.w3.org/1999/02/22-rdf-syntax-ns#type"), type),
     df.quad(subject, df.namedNode("https://www.w3.org/ns/activitystreams#object"), iri),
     df.quad(subject, df.namedNode("https://www.w3.org/ns/activitystreams#published"), df.literal((new Date()).toISOString(), df.namedNode('http://www.w3.org/2001/XMLSchema#dateTime'))),
