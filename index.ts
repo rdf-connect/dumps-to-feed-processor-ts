@@ -242,4 +242,36 @@ export async function processor(
       await tryProcessing();
     });
   }
+
+  let dumpEnded = false;
+  let nodeShapeEnded = false;
+  let focusNodesEnded = false;
+  let tryClosingWriter = () => {
+    if (dumpEnded && nodeShapeEnded && focusNodesEnded) {
+      writer.end();
+    }
+  }
+
+  dump.on('end', async () => {
+    dumpEnded = true;
+    tryClosingWriter();
+  });
+
+  if (listenToNodeShape) {
+    nodeShape!.on('end', async () => {
+      nodeShapeEnded = true;
+      tryClosingWriter();
+    });
+  } else {
+    nodeShapeEnded = true;
+  }
+
+  if (listenToFocusNodes) {
+    focusNodes!.on('end', async () => {
+      focusNodesEnded = true;
+      tryClosingWriter();
+    });
+  } else {
+    focusNodesEnded = true;
+  }
 }
