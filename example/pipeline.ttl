@@ -25,4 +25,5 @@
     js:focusNodesStrategy "extract";
     # js:nodeShape <shape/reader>;
     # js:focusNodes <focusNodes/reader>;
-    js:nodeShapeIri "https://semiceu.github.io/LDES-DCAT-AP-feeds/shape.ttl#ActivityShape".
+    js:nodeShapeIri "https://semiceu.github.io/LDES-DCAT-AP-feeds/shape.ttl#ActivityShape";
+    js:dbDir "./".

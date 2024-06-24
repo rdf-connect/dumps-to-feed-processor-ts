@@ -12,6 +12,7 @@ import rdfParser from "rdf-parse";
 import arrayifyStream from "arrayify-stream";
 import streamifyString from "streamify-string";
 import streamifyArray from "streamify-array";
+import * as path from "path";
 
 const {canonize} = require('rdf-canonize');
 
@@ -102,6 +103,7 @@ async function findFocusNodes(store: RdfStore, query?: string): Promise<ResultSt
  * @param nodeShapeIri if no nodeShapeStore was set, it will dereference the nodeShapeIri.
  * @param nodeShape serialized quads containing the node shape
  * @param focusNodes comma separated list of IRIs of the NamedNodes as subjects that should be extracted, or a SPARQL query resolving into a list of entities to be used as focus nodes
+ * @param dbDir the directory where the leveldb will be stored. Default is "./"
  */
 export async function main(
   writer: Writer<string>,
@@ -112,9 +114,10 @@ export async function main(
   focusNodesStrategy: 'extract' | 'sparql' | 'iris',
   nodeShapeIri: string,
   nodeShape?: string,
-  focusNodes?: string) {
+  focusNodes?: string,
+  dbDir = "./") {
 
-  const db = new Level("state-of-" + feedname, {valueEncoding: 'json'});
+  const db = new Level(path.join(dbDir, "state-of-" + feedname), {valueEncoding: 'json'});
   if (flush) {
     await db.clear();
   }
@@ -193,6 +196,7 @@ export async function main(
  * @param nodeShapeIri if no nodeShapeStore was set, it will dereference the nodeShapeIri.
  * @param nodeShape quad stream containing the node shape
  * @param focusNodes comma separated list of IRIs of the NamedNodes as subjects that should be extracted, or a SPARQL query resolving into a list of entities to be used as focus nodes
+ * @param dbDir the directory where the leveldb will be stored. Default is "./"
  */
 export async function processor(
   writer: Writer<string>,
@@ -203,7 +207,8 @@ export async function processor(
   focusNodesStrategy: 'extract' | 'sparql' | 'iris',
   nodeShapeIri: string,
   nodeShape?: Stream<string>,
-  focusNodes?: Stream<string>) {
+  focusNodes?: Stream<string>,
+  dbDir = "./") {
 
   const listenToNodeShape = !!nodeShape;
   const listenToFocusNodes = focusNodesStrategy === 'iris' || focusNodesStrategy === 'sparql';
@@ -220,7 +225,7 @@ export async function processor(
       const nextDump = dumpBuffer.shift()!;
       const nextNodeShape = nodeShapeBuffer.shift();
       const nextFocusNodes = focusNodesBuffer.shift();
-      await main(writer, feedname, flush, nextDump, dumpContentType, focusNodesStrategy, nodeShapeIri, nextNodeShape, nextFocusNodes);
+      await main(writer, feedname, flush, nextDump, dumpContentType, focusNodesStrategy, nodeShapeIri, nextNodeShape, nextFocusNodes, dbDir);
     }
   }
 

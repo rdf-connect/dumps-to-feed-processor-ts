@@ -18,6 +18,7 @@ program.argument('<feedname>', 'name of the feed you want to update')
   .option('-fn, --focusNodes <focusNode>', "comma separated list of IRIs of the NamedNodes as subjects that should be extracted, or a SPARQL query resolving into a list of entities to be used as focus nodes")
   .option('-s, --nodeShape <nodeShape>', "serialized quads containing the node shape")
   .option('-o, --out <filepath>', "File where the feed will be appended to. Default stdout")
+  .option('-d, --dbDir <dbDir>', "Directory where the leveldb will be stored. Default ./db")
   .action(async (feedname: string, dump: string, nodeShapeIri: string, options: any) => {
 
     const writer = {
@@ -33,7 +34,7 @@ program.argument('<feedname>', 'name of the feed you want to update')
     };
 
     // We should not await main here, so the reader can push data before main is awaited.
-    await main(writer, feedname, options.flush, dump, options.dumpContentType, options.focusNodesStrategy, nodeShapeIri, options.nodeShape, options.focusNodes);
+    await main(writer, feedname, options.flush, dump, options.dumpContentType, options.focusNodesStrategy, nodeShapeIri, options.nodeShape, options.focusNodes, options.dbDir);
   });
 
 program.parse();

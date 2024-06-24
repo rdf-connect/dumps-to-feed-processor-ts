@@ -44,11 +44,15 @@ js:DumpsToFeed a js:JsProcess;
              a fnom:PositionParameterMapping;
              fnom:functionParameter "node shape";
              fnom:implementationParameterPosition "7"^^xsd:int;
-]       , [
+        ], [
             a fnom:PositionParameterMapping;
             fnom:functionParameter "focus nodes";
             fnom:implementationParameterPosition "8"^^xsd:int;
-        ];
+        ], [
+             a fnom:PositionParameterMapping;
+             fnom:functionParameter "level db directory";
+             fnom:implementationParameterPosition "9"^^xsd:int;
+         ];
     ].
 
 [ ] a sh:NodeShape;
@@ -104,5 +108,10 @@ js:DumpsToFeed a js:JsProcess;
         sh:class :ReaderChannel;
         sh:path js:focusNodes;
         sh:name "focus nodes";
+        sh:maxCount 1;
+    ], [
+        sh:class xsd:string;
+        sh:path js:dbDir;
+        sh:name "level db directory";
         sh:maxCount 1;
     ].
