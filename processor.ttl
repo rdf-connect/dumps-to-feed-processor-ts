@@ -110,7 +110,7 @@ js:DumpsToFeed a js:JsProcess;
         sh:name "focus nodes";
         sh:maxCount 1;
     ], [
-        sh:class xsd:string;
+        sh:datatype  xsd:string;
         sh:path js:dbDir;
         sh:name "level db directory";
         sh:maxCount 1;
