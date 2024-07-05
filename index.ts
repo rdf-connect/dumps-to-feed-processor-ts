@@ -80,7 +80,7 @@ async function findFocusNodes(store: RdfStore, query?: string): Promise<ResultSt
   PREFIX vcard: <http://www.w3.org/2006/vcard/ns#>
   PREFIX dcterms: <http://purl.org/dc/terms/>
 
-  SELECT ?entity
+  SELECT DISTINCT ?entity
   WHERE {
     ?entity a ?type .
     FILTER (?type IN (dcat:Catalog, dcat:Dataset, dcat:Distribution, dcat:DataService, foaf:Agent, vcard:Kind, dcterms:LicenseDocument))
