@@ -42,7 +42,8 @@
     "rdf-stores": "^1.0.0",
     "streamify-array": "^1.0.1",
     "streamify-string": "^1.0.1",
-    "ts-node": "^10.9.1"
+    "ts-node": "^10.9.1",
+    "winston": "^3.13.1"
   },
   "devDependencies": {
     "@rdfc/shacl-processor-ts": "^0.1.2",

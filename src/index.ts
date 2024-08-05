@@ -13,6 +13,9 @@ import arrayifyStream from "arrayify-stream";
 import streamifyString from "streamify-string";
 import streamifyArray from "streamify-array";
 import * as path from "path";
+import {getLoggerFor} from "./utils/logUtil";
+
+const logger = getLoggerFor("processor");
 
 const {canonize} = require('rdf-canonize');
 
@@ -66,7 +69,7 @@ async function focusNodesToSubjects(store: RdfStore, focusNodesStrategy: 'extrac
       return findFocusNodes(store, focusNodes);
     case 'iris':
       if (!focusNodes) {
-        console.error(`focusNodesStrategy is set to '${focusNodesStrategy}' but no focusNodes were provided`);
+        logger.error(`[focusNodesToSubjects] focusNodesStrategy is set to '${focusNodesStrategy}' but no focusNodes were provided`);
         return streamifyArray([]);
       }
       return streamifyArray(focusNodes.split(',').map((iri) => df.namedNode(iri)));
@@ -119,6 +122,7 @@ export async function main(
 
   const db = new Level(path.join(dbDir, "state-of-" + feedname), {valueEncoding: 'json'});
   if (flush) {
+    logger.info(`Flushing the database for feed ${feedname}.`);
     await db.clear();
   }
   const store = await dumpToRdfStore(dump, dumpContentType);
@@ -136,7 +140,7 @@ export async function main(
   subjectsStream.on('data', async (subject: Term) => {
     if (subject.termType === 'BlankNode') {
       // Let's skip this entity
-      console.error("An entity (type " + store.getQuads(subject, df.namedNode("http://www.w3.org/1999/02/22-rdf-syntax-ns#type"), null)[0].object.value + ") cannot be a blank node!");
+      logger.error("An entity (type " + store.getQuads(subject, df.namedNode("http://www.w3.org/1999/02/22-rdf-syntax-ns#type"), null)[0].object.value + ") cannot be a blank node!");
     } else if (subject.termType === 'NamedNode') {
       let entityQuads = await extractor.extract(store, subject, nodeShapeIriTerm);
       // Alright! We got an entity!
@@ -151,15 +155,17 @@ export async function main(
       try {
         let previousHashString = await db.get(subject.value);
         if (previousHashString !== hashString) {
+          logger.debug(`Unequal hashes found in the db for '${subject.value}'. Processing an Update.`);
           // An Update!
           processActivity(writer, entityQuads, df.namedNode("https://www.w3.org/ns/activitystreams#Update"), subject, hashString);
           // We could also not await here, as there's nothing keeping us from continuing
           await db.put(subject.value, hashString);
         } else {
           // Remained the same: do nothing
-          //console.log("Remained the same", subject);
+          logger.verbose(`Equal hashes found in the db for '${subject.value}'. Doing nothing.`);
         }
       } catch (e) {
+        logger.debug(`No hash found in the db for '${subject.value}'. Processing a Create.`);
         // PreviousHashString hasn't been set, so let's add a Create in our stream
         processActivity(writer, entityQuads, df.namedNode("https://www.w3.org/ns/activitystreams#Create"), subject, hashString);
         // We could also not await here, as there's nothing keeping us from continuing
@@ -174,6 +180,8 @@ export async function main(
     // Loop over the keys and check whether they are set in the store. If there are keys that weren't set before, it's a deletion!
     for (let key of keys) {
       if (store.getQuads(df.namedNode(key), null, null).length === 0) {
+        logger.debug(`Key '${key}' was found in the db but not in the store. Processing a Delete.`);
+
         processActivity(writer, [], df.namedNode("https://www.w3.org/ns/activitystreams#Delete"), df.namedNode(key), "deletion-" + encodeURIComponent(new Date().toISOString()));
         // and remove the entry in leveldb now, so it doesn't appear as removed twice in the feed on the next run
         await db.del(key);
@@ -182,7 +190,7 @@ export async function main(
   });
 
   subjectsStream.on('error', (e) => {
-    console.error(e);
+    logger.error(e);
   });
 }
 
@@ -213,7 +221,7 @@ export async function processor(
   const listenToNodeShape = !!nodeShape;
   const listenToFocusNodes = focusNodesStrategy === 'iris' || focusNodesStrategy === 'sparql';
   if (listenToFocusNodes && !focusNodes) {
-    console.error(`focusNodesStrategy is set to '${focusNodesStrategy}' but no focusNodes were provided`);
+    logger.error(`focusNodesStrategy is set to '${focusNodesStrategy}' but no focusNodes were provided`);
     return;
   }
   const dumpBuffer: string[] = [];
@@ -253,6 +261,7 @@ export async function processor(
   let focusNodesEnded = false;
   let tryClosingWriter = () => {
     if (dumpEnded && nodeShapeEnded && focusNodesEnded) {
+      logger.info("All input streams ended, closing writer.");
       writer.end();
     }
   }
