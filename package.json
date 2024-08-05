@@ -7,7 +7,7 @@
     "dumps-to-feed": "dist/bin/dumpsToFeed.js"
   },
   "scripts": {
-    "test": "mocha",
+    "test": "mocha --timeout 10000 --import=tsx tests/**/*.test.ts --exit",
     "build": "tsc"
   },
   "repository": {
@@ -49,6 +49,7 @@
     "@rdfc/shacl-processor-ts": "^0.1.2",
     "@types/streamify-array": "^1.0.3",
     "@types/streamify-string": "^1.0.4",
+    "tsx": "^4.16.5",
     "typescript": "^5.3.3"
   }
 }
