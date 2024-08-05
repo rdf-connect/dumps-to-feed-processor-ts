@@ -12,6 +12,12 @@ npm install
 npm run build
 ```
 
+### Install from npm
+
+```bash
+npm install @rdfc/dumps-to-feed-processor-ts
+```
+
 ### Run the CLI version
 
 ```bash
@@ -19,6 +25,8 @@ node . sweden https://admin.dataportal.se/all.rdf https://semiceu.github.io/LDES
 ```
 
 ### Run the example pipeline
+
+An example pipeline configuration is provided in the `example` folder. You can run it with the following command:
 
 ```bash
 npx js-runner example/pipeline.ttl
