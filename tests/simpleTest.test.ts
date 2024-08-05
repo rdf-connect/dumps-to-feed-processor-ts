@@ -1,7 +1,7 @@
 import { assert } from "chai";
 import { RdfStore } from "rdf-stores";
 import { Level } from "level";
-import { main } from "../index"
+import { main } from "../src"
 import * as N3 from "n3";
 import { DataFactory } from "rdf-data-factory";
 const df: DataFactory = new DataFactory();
@@ -9,7 +9,7 @@ const df: DataFactory = new DataFactory();
 
 function testCorrectness(log: string, value: string | undefined, type: string) {
     const parser = new N3.Parser();
-    const quads = parser.parse(log); 
+    const quads = parser.parse(log);
     const store = RdfStore.createDefault();
     for (let quad of quads) {
         store.addQuad(quad);
