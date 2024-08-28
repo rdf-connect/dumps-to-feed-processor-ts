@@ -36,7 +36,7 @@
     "mocha": "^10.2.0",
     "n3": "^1.17.2",
     "rdf-canonize": "^4.0.1",
-    "rdf-dereference": "^2.2.0",
+    "rdf-dereference": "^3.0.0",
     "rdf-js": "^4.0.2",
     "rdf-parse": "^2.3.3",
     "rdf-stores": "^1.0.0",
