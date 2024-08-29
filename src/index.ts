@@ -142,44 +142,57 @@ export async function main(
 
    let processing = 0;
 
-   subjectsStream.on('data', async (subject: Term) => {
-      processing++;
-      if (subject.termType === 'BlankNode') {
-         // Let's skip this entity
-         logger.error("An entity (type " + store.getQuads(subject, df.namedNode("http://www.w3.org/1999/02/22-rdf-syntax-ns#type"), null)[0].object.value + ") cannot be a blank node!");
-         processing--;
-      } else if (subject.termType === 'NamedNode') {
-         let entityQuads = await extractor.extract(store, subject, nodeShapeIriTerm);
-         // Alright! We got an entity!
-         // Now let's first create a hash to check whether the set of triples changed since last time.
-         // We'll use a library to make the entity description canonized -- see https://w3c.github.io/rdf-canon/spec/
-         let canonizedString = await canonize(entityQuads, {algorithm: 'RDFC-1.0'});
+  const buffer: Term[] = [];
+  let busy = false;
 
-         // Now we can hash this string, for example with MD5
-         let hashString = createHash('md5').update(canonizedString).digest('hex');
+  subjectsStream.on("data", async (subject: Term) => {
+    buffer.push(subject);
+    if (!busy) {
+      busy = true;
+      let head = buffer.shift();
+      while(head) {
+        processing++;
+        if (subject.termType === 'BlankNode') {
+           // Let's skip this entity
+           logger.error("An entity (type " + store.getQuads(subject, df.namedNode("http://www.w3.org/1999/02/22-rdf-syntax-ns#type"), null)[0].object.value + ") cannot be a blank node!");
+           processing--;
+        } else if (subject.termType === 'NamedNode') {
+           let entityQuads = await extractor.extract(store, subject, nodeShapeIriTerm);
+           // Alright! We got an entity!
+           // Now let's first create a hash to check whether the set of triples changed since last time.
+           // We'll use a library to make the entity description canonized -- see https://w3c.github.io/rdf-canon/spec/
+           let canonizedString = await canonize(entityQuads, {algorithm: 'RDFC-1.0'});
 
-         // Now let's compare our hash with the hash in our leveldb key/val store.
-         try {
-            let previousHashString = await db.get(subject.value);
-            if (previousHashString !== hashString) {
-               logger.debug(`Unequal hashes found in the db for '${subject.value}'. Processing an Update.`);
-               await db.put(subject.value, hashString);
-               // An Update!
-               await processActivity(writer, entityQuads, df.namedNode("https://www.w3.org/ns/activitystreams#Update"), subject, hashString);
-            } else {
-               // Remained the same: do nothing
-               logger.verbose(`Equal hashes found in the db for '${subject.value}'. Doing nothing.`);
-            }
-         } catch (e) {
-            logger.debug(`No hash found in the db for '${subject.value}'. Processing a Create.`);
-            await db.put(subject.value, hashString);
-            // PreviousHashString hasn't been set, so let's add a Create in our stream
-            await processActivity(writer, entityQuads, df.namedNode("https://www.w3.org/ns/activitystreams#Create"), subject, hashString);
-         } finally {
-            processing--;
-         }
+           // Now we can hash this string, for example with MD5
+           let hashString = createHash('md5').update(canonizedString).digest('hex');
+
+           // Now let's compare our hash with the hash in our leveldb key/val store.
+           try {
+              let previousHashString = await db.get(subject.value);
+              if (previousHashString !== hashString) {
+                 logger.debug(`Unequal hashes found in the db for '${subject.value}'. Processing an Update.`);
+                 await db.put(subject.value, hashString);
+                 // An Update!
+                 await processActivity(writer, entityQuads, df.namedNode("https://www.w3.org/ns/activitystreams#Update"), subject, hashString);
+              } else {
+                 // Remained the same: do nothing
+                 logger.verbose(`Equal hashes found in the db for '${subject.value}'. Doing nothing.`);
+              }
+           } catch (e) {
+              logger.debug(`No hash found in the db for '${subject.value}'. Processing a Create.`);
+              await db.put(subject.value, hashString);
+              // PreviousHashString hasn't been set, so let's add a Create in our stream
+              await processActivity(writer, entityQuads, df.namedNode("https://www.w3.org/ns/activitystreams#Create"), subject, hashString);
+           } finally {
+              processing--;
+           }
+        }
+
+        head = buffer.shift();
       }
-   });
+      busy = false;
+   }
+  });
 
    await new Promise((resolve, reject) => {
       subjectsStream.on('end', async () => {
