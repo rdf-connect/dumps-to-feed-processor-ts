@@ -28,7 +28,7 @@
     "@types/mocha": "^10.0.7",
     "@types/n3": "^1.16.5",
     "@types/sinon": "^10.0.20",
-    "arrayify-stream": "^2.0.1",
+    "arrayify-stream": "^3.0.0",
     "chai": "^4.5.0",
     "commander": "^12.1.0",
     "extract-cbd-shape": "^0.1.8",
