@@ -24,7 +24,7 @@
     "@rdfc/js-runner": "^0.2.2",
     "@rdfjs/normalize": "^2.0.3",
     "@rdfjs/types": "^1.1.2",
-    "@types/chai": "^4.3.19",
+    "@types/chai": "^4.3.20",
     "@types/mocha": "^10.0.8",
     "@types/n3": "^1.21.0",
     "@types/sinon": "^10.0.20",
