@@ -39,7 +39,7 @@
     "rdf-canonize": "^4.0.1",
     "rdf-dereference": "^2.2.0",
     "rdf-js": "^4.0.2",
-    "rdf-parse": "^2.3.3",
+    "rdf-parse": "^4.0.0",
     "rdf-stores": "^1.0.0",
     "streamify-array": "^1.0.1",
     "streamify-string": "^1.0.1",
