@@ -33,7 +33,7 @@
     "commander": "^12.1.0",
     "extract-cbd-shape": "^0.1.8",
     "level": "^8.0.1",
-    "mocha": "^10.7.3",
+    "mocha": "^10.8.2",
     "n3": "^1.22.3",
     "queue-fifo": "^0.2.6",
     "rdf-canonize": "^4.0.1",
