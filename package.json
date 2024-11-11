@@ -34,7 +34,7 @@
     "extract-cbd-shape": "^0.1.8",
     "level": "^8.0.1",
     "mocha": "^10.8.2",
-    "n3": "^1.22.3",
+    "n3": "^1.23.0",
     "queue-fifo": "^0.2.6",
     "rdf-canonize": "^4.0.1",
     "rdf-dereference": "^2.2.0",
@@ -44,7 +44,7 @@
     "streamify-array": "^1.0.1",
     "streamify-string": "^1.0.1",
     "ts-node": "^10.9.2",
-    "winston": "^3.16.0"
+    "winston": "^3.17.0"
   },
   "devDependencies": {
     "@rdfc/shacl-processor-ts": "^0.1.2",
