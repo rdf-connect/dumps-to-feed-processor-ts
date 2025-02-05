@@ -1,6 +1,6 @@
 {
   "name": "@rdfc/dumps-to-feed-processor-ts",
-  "version": "1.0.7",
+  "version": "1.1.0",
   "description": "Does change detection on entities in consecutive data dumps and transforms these into an ActivityStreams change feed with the entities in a named graph",
   "main": "dist/bin/dumpsToFeed.js",
   "bin": {
