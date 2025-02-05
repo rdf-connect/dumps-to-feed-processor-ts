@@ -15,6 +15,7 @@ import streamifyArray from "streamify-array";
 import * as path from "path";
 import {getLoggerFor} from "./utils/logUtil";
 import Queue from "queue-fifo";
+import {Readable} from 'stream';
 
 const logger = getLoggerFor("processor");
 
@@ -52,9 +53,13 @@ async function processActivity(writer: Writer<string>, quads: Array<any>, type: 
    });
 }
 
-async function dumpToRdfStore(dump: string, dumpContentType: string): Promise<RdfStore> {
+async function dumpToRdfStore(dump: string | Buffer, dumpContentType: string): Promise<RdfStore> {
    const store = RdfStore.createDefault();
-   if (dumpContentType === 'identifier') {
+   if (Buffer.isBuffer(dump)) {
+      for (const quad of await arrayifyStream(rdfParser.parse(Readable.from(dump), {contentType: dumpContentType}))) {
+         store.addQuad(quad);
+      }
+   } else if (dumpContentType === 'identifier') {
       const {data} = await rdfDereferencer.dereference(dump, {localFiles: true});
       await loadQuadStreamInStore(store, data);
    } else {
@@ -116,7 +121,7 @@ export async function main(
    writer: Writer<string>,
    feedname: string,
    flush: boolean,
-   dump: string,
+   dump: string | Buffer,
    dumpContentType: string,
    focusNodesStrategy: 'extract' | 'sparql' | 'iris',
    nodeShapeIri: string,
@@ -159,7 +164,7 @@ export async function main(
          processing++;
          if (subject.termType === 'BlankNode') {
             // Let's skip this entity
-            logger.error("An entity (type " + store.getQuads(subject, df.namedNode("http://www.w3.org/1999/02/22-rdf-syntax-ns#type"), null)[0].object.value + ") cannot be a blank node!");
+            logger.error("An entity (type " + store.getQuads(subject, df.namedNode("http://www.w3.org/1999/02/22-rdf-syntax-ns#type"), null)[0]?.object.value + ") cannot be a blank node!");
             processing--;
          } else if (subject.termType === 'NamedNode') {
             let entityQuads = await extractor.extract(store, subject, nodeShapeIriTerm);
@@ -245,7 +250,7 @@ export async function processor(
    writer: Writer<string>,
    feedname: string,
    flush: boolean,
-   dump: Stream<string>,
+   dump: Stream<string | Buffer>,
    dumpContentType: string,
    focusNodesStrategy: 'extract' | 'sparql' | 'iris',
    nodeShapeIri: string,
@@ -259,7 +264,7 @@ export async function processor(
       logger.error(`focusNodesStrategy is set to '${focusNodesStrategy}' but no focusNodes were provided`);
       return;
    }
-   const dumpBuffer: string[] = [];
+   const dumpBuffer: (string | Buffer)[] = [];
    const nodeShapeBuffer: string[] = [];
    const focusNodesBuffer: string[] = [];
 
@@ -272,7 +277,7 @@ export async function processor(
       }
    }
 
-   dump.data(async (data: string) => {
+   dump.data(async (data: string | Buffer) => {
       dumpBuffer.push(data);
       await tryProcessing();
    });
