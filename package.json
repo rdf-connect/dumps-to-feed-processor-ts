@@ -32,7 +32,7 @@
     "arrayify-stream": "^3.0.0",
     "chai": "^4.5.0",
     "commander": "^12.1.0",
-    "extract-cbd-shape": "^0.1.8",
+    "extract-cbd-shape": "^0.1.11",
     "level": "^8.0.1",
     "mocha": "^10.8.2",
     "n3": "^1.23.1",
@@ -53,6 +53,6 @@
     "@types/streamify-string": "^1.0.4",
     "tsc-alias": "^1.8.10",
     "tsx": "^4.19.2",
-    "typescript": "^5.7.2"
+    "typescript": "^5.7.3"
   }
 }
