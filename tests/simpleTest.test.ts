@@ -3,8 +3,13 @@ import {RdfStore} from "rdf-stores";
 import {main} from "../src"
 import * as N3 from "n3";
 import {DataFactory} from "rdf-data-factory";
+import {Handler} from "@rdfc/js-runner";
+import {fileURLToPath} from "node:url";
+import path from "node:path";
 const df: DataFactory = new DataFactory();
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 function testCorrectness(log: string, value: string | undefined, type: string) {
    const parser = new N3.Parser();
@@ -55,6 +60,9 @@ ex:NodeShape
          },
          end: async () => {
          },
+         on(event: "end", listener: Handler<void>) {
+            return this;
+         }
       };
 
       // Create
@@ -74,6 +82,9 @@ ex:NodeShape
          },
          end: async () => {
          },
+         on(event: "end", listener: Handler<void>) {
+            return this;
+         }
       };
 
       // Update
@@ -93,6 +104,9 @@ ex:NodeShape
          },
          end: async () => {
          },
+         on(event: "end", listener: Handler<void>) {
+            return this;
+         }
       };
 
       const inputDeleteFile = __dirname + "/inputDelete.ttl";

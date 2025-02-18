@@ -1,4 +1,4 @@
-import rdfDereferencer from "rdf-dereference";
+import {rdfDereferencer} from "rdf-dereference";
 import {CBDShapeExtractor} from "extract-cbd-shape";
 import {createHash} from 'node:crypto';
 import {RdfStore} from 'rdf-stores';
@@ -8,18 +8,18 @@ import {NamedNode, ResultStream, Term} from "@rdfjs/types";
 import type {Stream, Writer} from "@rdfc/js-runner";
 import {Level} from "level";
 import {QueryEngine} from "@comunica/query-sparql";
-import rdfParser from "rdf-parse";
-import arrayifyStream from "arrayify-stream";
+import {rdfParser} from "rdf-parse";
+import {arrayifyStream} from "arrayify-stream";
 import streamifyString from "streamify-string";
-import streamifyArray from "streamify-array";
+import {streamifyArray} from "streamify-array";
 import * as path from "path";
 import {getLoggerFor} from "./utils/logUtil";
 import Queue from "queue-fifo";
 import {Readable} from 'stream';
+// @ts-ignore No type definitions available
+import {canonize} from 'rdf-canonize';
 
 const logger = getLoggerFor("processor");
-
-const {canonize} = require('rdf-canonize');
 
 const df: DataFactory = new DataFactory();
 const engine = new QueryEngine();
@@ -164,7 +164,7 @@ export async function main(
          processing++;
          if (subject.termType === 'BlankNode') {
             // Let's skip this entity
-            logger.error("An entity (type " + store.getQuads(subject, df.namedNode("http://www.w3.org/1999/02/22-rdf-syntax-ns#type"), null)[0]?.object.value + ") cannot be a blank node!");
+            logger.error("An entity (" + subject.value + ") cannot be a blank node!");
             processing--;
          } else if (subject.termType === 'NamedNode') {
             let entityQuads = await extractor.extract(store, subject, nodeShapeIriTerm);

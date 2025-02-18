@@ -2,13 +2,14 @@
   "name": "@rdfc/dumps-to-feed-processor-ts",
   "version": "1.1.0",
   "description": "Does change detection on entities in consecutive data dumps and transforms these into an ActivityStreams change feed with the entities in a named graph",
+  "type": "module",
   "main": "dist/bin/dumpsToFeed.js",
   "bin": {
     "dumps-to-feed": "dist/bin/dumpsToFeed.js"
   },
   "scripts": {
     "test": "mocha --timeout 10000 --import=tsx tests/**/*.test.ts --exit",
-    "build": "tsc"
+    "build": "tsc && tsc-alias"
   },
   "repository": {
     "type": "git",
@@ -20,7 +21,7 @@
   ],
   "license": "MIT",
   "dependencies": {
-    "@comunica/query-sparql": "^3.3.0",
+    "@comunica/query-sparql": "^4.1.0",
     "@rdfc/js-runner": "^1.0.0",
     "@rdfjs/normalize": "^2.0.3",
     "@rdfjs/types": "^1.1.2",
@@ -28,7 +29,7 @@
     "@types/mocha": "^10.0.10",
     "@types/n3": "^1.21.1",
     "@types/sinon": "^10.0.20",
-    "arrayify-stream": "^2.0.1",
+    "arrayify-stream": "^3.0.0",
     "chai": "^4.5.0",
     "commander": "^12.1.0",
     "extract-cbd-shape": "^0.1.8",
@@ -37,11 +38,11 @@
     "n3": "^1.23.1",
     "queue-fifo": "^0.2.6",
     "rdf-canonize": "^4.0.1",
-    "rdf-dereference": "^2.2.0",
+    "rdf-dereference": "^4.0.0",
     "rdf-js": "^4.0.2",
-    "rdf-parse": "^2.3.3",
+    "rdf-parse": "^4.0.0",
     "rdf-stores": "^1.0.0",
-    "streamify-array": "^1.0.1",
+    "streamify-array": "^2.0.0",
     "streamify-string": "^1.0.1",
     "ts-node": "^10.9.2",
     "winston": "^3.17.0"
@@ -50,6 +51,7 @@
     "@rdfc/shacl-processor-ts": "^0.1.2",
     "@types/streamify-array": "^1.0.3",
     "@types/streamify-string": "^1.0.4",
+    "tsc-alias": "^1.8.10",
     "tsx": "^4.19.2",
     "typescript": "^5.7.2"
   }
