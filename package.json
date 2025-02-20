@@ -24,7 +24,7 @@
     "@comunica/query-sparql": "^4.1.0",
     "@rdfc/js-runner": "^1.0.0",
     "@rdfjs/normalize": "^2.0.3",
-    "@rdfjs/types": "^1.1.2",
+    "@rdfjs/types": "^2.0.1",
     "@types/chai": "^4.3.20",
     "@types/mocha": "^10.0.10",
     "@types/n3": "^1.21.1",
