@@ -22,7 +22,7 @@ function testCorrectness(log: string, value: string | undefined, type: string) {
    const members = store.getQuads(null, df.namedNode("http://www.w3.org/1999/02/22-rdf-syntax-ns#type"), df.namedNode(type)).map((quad) => {
       return quad.subject;
    });
-   assert(members.length === 1, "expected one member in the case of a " + type);
+   assert(members.length === 1, "expected one member in the case of a " + type + " (found " + members.length + ")");
    const member = members[0];
 
    if (value) {
