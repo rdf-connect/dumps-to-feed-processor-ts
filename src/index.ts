@@ -177,25 +177,22 @@ export async function main(
             let hashString = createHash('md5').update(canonizedString).digest('hex');
 
             // Now let's compare our hash with the hash in our leveldb key/val store.
-            try {
-               let previousHashString = await db.get(subject.value);
-               if (previousHashString !== hashString) {
-                  logger.debug(`Unequal hashes found in the db for '${subject.value}'. Processing an Update.`);
-                  await db.put(subject.value, hashString);
-                  // An Update!
-                  await processActivity(writer, entityQuads, df.namedNode("https://www.w3.org/ns/activitystreams#Update"), subject, hashString);
-               } else {
-                  // Remained the same: do nothing
-                  logger.verbose(`Equal hashes found in the db for '${subject.value}'. Doing nothing.`);
-               }
-            } catch (e) {
+            let previousHashString = await db.get(subject.value);
+            if (!previousHashString) {
                logger.debug(`No hash found in the db for '${subject.value}'. Processing a Create.`);
                await db.put(subject.value, hashString);
                // PreviousHashString hasn't been set, so let's add a Create in our stream
                await processActivity(writer, entityQuads, df.namedNode("https://www.w3.org/ns/activitystreams#Create"), subject, hashString);
-            } finally {
-               processing--;
+            } else if (previousHashString !== hashString) {
+               logger.debug(`Unequal hashes found in the db for '${subject.value}'. Processing an Update.`);
+               await db.put(subject.value, hashString);
+               // An Update!
+               await processActivity(writer, entityQuads, df.namedNode("https://www.w3.org/ns/activitystreams#Update"), subject, hashString);
+            } else {
+               // Remained the same: do nothing
+               logger.verbose(`Equal hashes found in the db for '${subject.value}'. Doing nothing.`);
             }
+            processing--;
          }
       }
       busy = false;
