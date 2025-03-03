@@ -35,7 +35,7 @@
     "extract-cbd-shape": "^0.1.12",
     "level": "^9.0.0",
     "mocha": "^11.1.0",
-    "n3": "^1.23.1",
+    "n3": "^1.23.2",
     "queue-fifo": "^0.2.6",
     "rdf-canonize": "^4.0.1",
     "rdf-dereference": "^4.0.0",
