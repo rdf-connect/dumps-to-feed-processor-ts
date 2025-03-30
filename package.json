@@ -51,7 +51,7 @@
     "@rdfc/shacl-processor-ts": "^0.1.2",
     "@types/streamify-array": "^1.0.3",
     "@types/streamify-string": "^1.0.4",
-    "tsc-alias": "^1.8.11",
+    "tsc-alias": "^1.8.13",
     "tsx": "^4.19.3",
     "typescript": "^5.8.2"
   }
