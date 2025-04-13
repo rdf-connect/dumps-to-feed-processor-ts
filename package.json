@@ -35,7 +35,7 @@
     "extract-cbd-shape": "^0.1.12",
     "level": "^9.0.0",
     "mocha": "^11.1.0",
-    "n3": "^1.24.2",
+    "n3": "^1.25.1",
     "queue-fifo": "^0.2.6",
     "rdf-canonize": "^4.0.1",
     "rdf-dereference": "^4.0.0",
@@ -51,7 +51,7 @@
     "@rdfc/shacl-processor-ts": "^0.1.2",
     "@types/streamify-array": "^1.0.3",
     "@types/streamify-string": "^1.0.4",
-    "tsc-alias": "^1.8.14",
+    "tsc-alias": "^1.8.15",
     "tsx": "^4.19.3",
     "typescript": "^5.8.3"
   }
