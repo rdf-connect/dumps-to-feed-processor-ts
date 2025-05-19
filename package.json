@@ -31,7 +31,7 @@
     "@types/sinon": "^17.0.4",
     "arrayify-stream": "^3.0.0",
     "chai": "^5.2.0",
-    "commander": "^13.1.0",
+    "commander": "^14.0.0",
     "extract-cbd-shape": "^0.1.12",
     "level": "^10.0.0",
     "mocha": "^11.3.0",
