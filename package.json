@@ -52,7 +52,7 @@
     "@types/streamify-array": "^1.0.3",
     "@types/streamify-string": "^1.0.4",
     "tsc-alias": "^1.8.16",
-    "tsx": "^4.19.4",
+    "tsx": "^4.20.0",
     "typescript": "^5.8.3"
   }
 }
