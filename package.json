@@ -21,7 +21,7 @@
   ],
   "license": "MIT",
   "dependencies": {
-    "@comunica/query-sparql": "^4.2.0",
+    "@comunica/query-sparql": "^4.3.0",
     "@rdfc/js-runner": "^1.0.0",
     "@rdfjs/normalize": "^2.0.3",
     "@rdfjs/types": "^2.0.1",
@@ -34,7 +34,7 @@
     "commander": "^14.0.0",
     "extract-cbd-shape": "^0.1.14",
     "level": "^10.0.0",
-    "mocha": "^11.6.0",
+    "mocha": "^11.7.0",
     "n3": "^1.26.0",
     "queue-fifo": "^0.2.6",
     "rdf-canonize": "^4.0.1",
