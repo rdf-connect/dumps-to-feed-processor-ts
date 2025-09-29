@@ -21,7 +21,7 @@
   ],
   "license": "MIT",
   "dependencies": {
-    "@comunica/query-sparql": "^4.4.0",
+    "@comunica/query-sparql": "^4.4.1",
     "@rdfc/js-runner": "^1.0.0",
     "@rdfjs/normalize": "^2.0.3",
     "@rdfjs/types": "^2.0.1",
@@ -52,7 +52,7 @@
     "@types/streamify-array": "^1.0.3",
     "@types/streamify-string": "^1.0.4",
     "tsc-alias": "^1.8.16",
-    "tsx": "^4.20.5",
+    "tsx": "^4.20.6",
     "typescript": "^5.9.2"
   }
 }
