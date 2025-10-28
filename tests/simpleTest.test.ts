@@ -1,9 +1,9 @@
 import {assert} from "chai";
 import {RdfStore} from "rdf-stores";
+import { channel, createRunner } from "@rdfc/js-runner/lib/testUtils";
 import {main} from "../src"
 import * as N3 from "n3";
 import {DataFactory} from "rdf-data-factory";
-import {Handler} from "@rdfc/js-runner";
 import {fileURLToPath} from "node:url";
 import path from "node:path";
 const df: DataFactory = new DataFactory();
@@ -51,19 +51,18 @@ ex:NodeShape
 `;
 
    it("Create a member", async () => {
+
+      const runner = createRunner();
+      const [writer, reader] = channel(runner, "channel");
+
       const feedname = 'test';
 
       let output = "";
-      const writer = {
-         push: async (data: string) => {
-            output += data;
-         },
-         end: async () => {
-         },
-         on(event: "end", listener: Handler<void>) {
-            return this;
-         }
-      };
+      (async () => {
+          for await (const st of reader.strings()) {
+              output += st;
+          }
+      })()
 
       // Create
       const inputCreateFile = __dirname + "/inputCreate.ttl";
@@ -75,17 +74,15 @@ ex:NodeShape
    it("Update a member", async () => {
       const feedname = 'test';
 
+      const runner = createRunner();
+      const [writer, reader] = channel(runner, "channel");
+
       let output = "";
-      const writer = {
-         push: async (data: string) => {
-            output += data;
-         },
-         end: async () => {
-         },
-         on(event: "end", listener: Handler<void>) {
-            return this;
-         }
-      };
+      (async () => {
+          for await (const st of reader.strings()) {
+              output += st;
+          }
+      })()
 
       // Update
       const inputUpdateFile = __dirname + "/inputUpdate.ttl";
@@ -97,18 +94,15 @@ ex:NodeShape
    it("Delete a member", async () => {
       const feedname = 'test';
 
-      let output = "";
-      const writer = {
-         push: async (data: string) => {
-            output += data;
-         },
-         end: async () => {
-         },
-         on(event: "end", listener: Handler<void>) {
-            return this;
-         }
-      };
+      const runner = createRunner();
+      const [writer, reader] = channel(runner, "channel");
 
+      let output = "";
+      (async () => {
+          for await (const st of reader.strings()) {
+              output += st;
+          }
+      })()
       const inputDeleteFile = __dirname + "/inputDelete.ttl";
 
       await main(writer, feedname, false, inputDeleteFile, 'identifier', 'extract', 'http://example.org/NodeShape', nodeShape);
