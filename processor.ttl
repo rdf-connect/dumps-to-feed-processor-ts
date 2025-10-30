@@ -12,7 +12,7 @@
 rdfc:DumpsToFeed a owl:Class, rdfs:Class;
   rdfc:jsImplementationOf rdfc:Processor;
   rdfc:file <./dist/index.js>;
-  rdfc:class "DumpsToFeeds";
+  rdfc:class "DumpsToFeed";
   rdfc:entrypoint <./>.
 
 [ ] a sh:NodeShape;
