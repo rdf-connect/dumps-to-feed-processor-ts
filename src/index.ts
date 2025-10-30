@@ -344,7 +344,7 @@ export type Args = {
   focusNodes?: Reader;
   dbDir: string; // = "./",
 };
-export class DumpsToFeeds extends Processor<Args> {
+export class DumpsToFeed extends Processor<Args> {
   private listenToNodeShape: boolean;
   private listenToFocusNodes: boolean;
   dumpBuffer: (string | Buffer)[] = [];
