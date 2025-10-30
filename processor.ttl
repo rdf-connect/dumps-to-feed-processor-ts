@@ -11,6 +11,8 @@
 
 rdfc:DumpsToFeed a owl:Class, rdfs:Class;
   rdfc:jsImplementationOf rdfc:Processor;
+  rdfs:label "Dumps To Feed Processor";
+  rdfs:comment "A processor that converts a dump of RDF data to a feed of RDF data based on a member SHACL shape.";
   rdfc:file <./dist/index.js>;
   rdfc:class "DumpsToFeed";
   rdfc:entrypoint <./>.
