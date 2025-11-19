@@ -1,4 +1,5 @@
 # dumps-to-feed-processor-ts
+[![Build and tests with Node.js](https://github.com/rdf-connect/dumps-to-feed-processor-ts/actions/workflows/build-test.yml/badge.svg)](https://github.com/rdf-connect/dumps-to-feed-processor-ts/actions/workflows/build-test.yml) [![npm](https://img.shields.io/npm/v/@rdfc/dumps-to-feed-processor-ts.svg?style=popout)](https://npmjs.com/package/@rdfc/dumps-to-feed-processor-ts)
 
 A dumps to feed processor for the [RDF Connect framework](https://github.com/rdf-connect).
 It can be run as part of a pipeline using the [js-runner](https://github.com/rdf-connect/js-runner), or as a standalone CLI tool.
