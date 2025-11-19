@@ -1,11 +1,13 @@
-import {assert} from "chai";
-import {RdfStore} from "rdf-stores";
+import { assert } from "chai";
+import { RdfStore } from "rdf-stores";
 import { channel, createRunner } from "@rdfc/js-runner/lib/testUtils";
-import {main} from "../src"
+import { main } from "../src"
 import * as N3 from "n3";
-import {DataFactory} from "rdf-data-factory";
-import {fileURLToPath} from "node:url";
+import { DataFactory } from "rdf-data-factory";
+import { fileURLToPath } from "node:url";
 import path from "node:path";
+import { createReadStream } from "fs";
+
 const df: DataFactory = new DataFactory();
 
 const __filename = fileURLToPath(import.meta.url);
@@ -59,9 +61,9 @@ ex:NodeShape
 
       let output = "";
       (async () => {
-          for await (const st of reader.strings()) {
-              output += st;
-          }
+         for await (const st of reader.strings()) {
+            output += st;
+         }
       })()
 
       // Create
@@ -79,9 +81,9 @@ ex:NodeShape
 
       let output = "";
       (async () => {
-          for await (const st of reader.strings()) {
-              output += st;
-          }
+         for await (const st of reader.strings()) {
+            output += st;
+         }
       })()
 
       // Update
@@ -99,13 +101,43 @@ ex:NodeShape
 
       let output = "";
       (async () => {
-          for await (const st of reader.strings()) {
-              output += st;
-          }
+         for await (const st of reader.strings()) {
+            output += st;
+         }
       })()
       const inputDeleteFile = __dirname + "/inputDelete.ttl";
 
       await main(writer, feedname, false, inputDeleteFile, 'identifier', 'extract', 'http://example.org/NodeShape', nodeShape);
       testCorrectness(output, undefined, "https://www.w3.org/ns/activitystreams#Delete")
+   });
+
+   it("Creates a member in a streaming way", async () => {
+
+      const runner = createRunner();
+      const [writer, reader] = channel(runner, "channel");
+
+      const feedname = 'test';
+
+      let output = "";
+      (async () => {
+         for await (const st of reader.strings()) {
+            output += st;
+         }
+      })()
+
+      // Create
+      const inputCreateFile = createReadStream(__dirname + "/inputCreate.ttl");
+
+      await main(
+         writer, 
+         feedname, 
+         true, 
+         inputCreateFile, 
+         'text/turtle', 
+         'extract', 
+         'http://example.org/NodeShape', 
+         nodeShape
+      );
+      testCorrectness(output, "42", "https://www.w3.org/ns/activitystreams#Create")
    });
 });

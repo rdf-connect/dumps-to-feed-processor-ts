@@ -1,6 +1,6 @@
 {
   "name": "@rdfc/dumps-to-feed-processor-ts",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "Does change detection on entities in consecutive data dumps and transforms these into an ActivityStreams change feed with the entities in a named graph",
   "type": "module",
   "main": "dist/bin/dumpsToFeed.js",
@@ -9,7 +9,8 @@
   },
   "scripts": {
     "test": "mocha --timeout 10000 --import=tsx tests/**/*.test.ts --exit",
-    "build": "tsc && tsc-alias"
+    "build": "tsc && tsc-alias",
+    "prepublishOnly": "npm run build"
   },
   "repository": {
     "type": "git",
@@ -21,37 +22,36 @@
   ],
   "license": "MIT",
   "dependencies": {
-    "@comunica/query-sparql": "^4.4.1",
+    "@comunica/query-sparql": "^4.5.0",
     "@rdfc/js-runner": "^3.0.1",
     "@rdfjs/normalize": "^2.0.3",
+    "arrayify-stream": "^3.0.0",
+    "commander": "^14.0.2",
+    "extract-cbd-shape": "^0.1.14",
+    "level": "^10.0.0",
+    "n3": "^1.26.0",
+    "queue-fifo": "^0.2.6",
+    "rdf-canonize": "^4.0.1",
+    "rdf-data-factory": "^2.0.2",
+    "rdf-dereference": "^4.0.0",
+    "rdf-parse": "^4.0.0",
+    "rdf-stores": "^2.1.1",
+    "streamify-array": "^2.0.0",
+    "streamify-string": "^1.0.1",
+    "winston": "^3.18.3"
+  },
+  "devDependencies": {
     "@rdfjs/types": "^2.0.1",
     "@types/chai": "^5.2.3",
     "@types/mocha": "^10.0.10",
     "@types/n3": "^1.26.1",
     "@types/sinon": "^17.0.4",
-    "arrayify-stream": "^3.0.0",
-    "chai": "^5.3.3",
-    "commander": "^14.0.2",
-    "extract-cbd-shape": "^0.1.14",
-    "level": "^10.0.0",
-    "mocha": "^11.7.5",
-    "n3": "^1.26.0",
-    "queue-fifo": "^0.2.6",
-    "rdf-canonize": "^4.0.1",
-    "rdf-dereference": "^4.0.0",
-    "rdf-js": "^4.0.2",
-    "rdf-parse": "^4.0.0",
-    "rdf-stores": "^2.1.1",
-    "streamify-array": "^2.0.0",
-    "streamify-string": "^1.0.1",
-    "ts-node": "^10.9.2",
-    "winston": "^3.18.3"
-  },
-  "devDependencies": {
-    "@rdfc/shacl-processor-ts": "^0.1.2",
     "@types/streamify-array": "^1.0.3",
     "@types/streamify-string": "^1.0.4",
+    "chai": "^5.3.3",
+    "mocha": "^11.7.5",
     "tsc-alias": "^1.8.16",
+    "ts-node": "^10.9.2",
     "tsx": "^4.20.6",
     "typescript": "^5.9.3"
   }
