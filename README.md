@@ -58,6 +58,7 @@ The processor can be configured using the following parameters:
 - `flush`: Whether to flush the previous version of the feed. If set to `true`, the processor will start with an empty feed and add all members from the dump as `as:Create` activities.
 - `dump`: A filename, URL, or serialized quads containing the dump of RDF data.
 - `dumpContentType`: The content type of the dump. Use 'identifier' in case of filename or url to be dereferenced.
+- `readAsStream`: Read the RDF dump data in a stream fashion. Useful when reading too large dumps.
 - `focusNodesStrategy`: `extract`, `sparql`, or `iris`. Use `extract` in case of automatic extraction (we will use a SPARQL query to find and extract all nodes of one of the [DCAT-AP Feeds standalone entity types](https://semiceu.github.io/LDES-DCAT-AP-feeds/index.html#standalone-entities)), `sparql` in case of a provided SPARQL query, 'iris' in case of comma separated IRIs (NamedNode values)
 - `nodeShapeIri`: The IRI of the SHACL shape that describes the members of the feed.
 - `nodeShape`: The serialized SHACL shape in `text/turtle` format that describes the members of the feed. Optional.
