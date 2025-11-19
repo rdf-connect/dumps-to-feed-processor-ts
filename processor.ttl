@@ -5,7 +5,6 @@
 @prefix fno: <https://w3id.org/function/ontology#>.
 @prefix fnom: <https://w3id.org/function/vocabulary/mapping#>.
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
-@prefix : <https://w3id.org/conn#>.
 @prefix sh: <http://www.w3.org/ns/shacl#>.
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
 
@@ -20,9 +19,9 @@ rdfc:DumpsToFeed a owl:Class, rdfs:Class;
 [ ] a sh:NodeShape;
   sh:targetClass rdfc:DumpsToFeed;
   sh:property [
-    sh:class :WriterChannel;
+    sh:class rdfc:Writer;
     sh:path rdfc:output;
-    sh:name "data output channel";
+    sh:name "writer";
     sh:maxCount 1;
     sh:minCount 1;
   ], [
@@ -34,47 +33,52 @@ rdfc:DumpsToFeed a owl:Class, rdfs:Class;
   ], [
     sh:datatype xsd:boolean;
     sh:path rdfc:flush;
-    sh:name "flush database";
+    sh:name "flush";
     sh:maxCount 1;
     sh:minCount 1;
   ], [
-    sh:class :ReaderChannel;
+    sh:class rdfc:Reader;
     sh:path rdfc:dump;
     sh:name "dump";
     sh:maxCount 1;
     sh:minCount 1;
   ], [
+    sh:datatype xsd:boolean;
+    sh:path rdfc:readAsStream;
+    sh:name "readAsStream";
+    sh:maxCount 1;
+  ], [
     sh:datatype xsd:string;
     sh:path rdfc:dumpContentType;
-    sh:name "dump content type";
+    sh:name "dumpContentType";
     sh:maxCount 1;
     sh:minCount 1;
   ], [
     sh:datatype xsd:string;
     sh:path rdfc:focusNodesStrategy;
-    sh:name "focus nodes strategy";
+    sh:name "focusNodesStrategy";
     sh:maxCount 1;
     sh:minCount 1;
   ], [
     sh:datatype xsd:string;
     sh:path rdfc:nodeShapeIri;
-    sh:name "node shape IRI";
+    sh:name "nodeShapeIri";
     sh:minCount 1;
     sh:maxCount 1;
   ], [
-    sh:class :ReaderChannel;
+    sh:class rdfc:Reader;
     sh:path rdfc:nodeShape;
-    sh:name "node shape";
+    sh:name "nodeShape";
     sh:maxCount 1;
   ], [
-    sh:class :ReaderChannel;
+    sh:class rdfc:Reader;
     sh:path rdfc:focusNodes;
-    sh:name "focus nodes";
+    sh:name "focusNodes";
     sh:maxCount 1;
   ], [
     sh:datatype xsd:string;
     sh:path rdfc:dbDir;
-    sh:name "level db directory";
+    sh:name "dbDir";
     sh:maxCount 1;
   ].
 

@@ -75,7 +75,7 @@ async function processActivity(
 }
 
 async function dumpToRdfStore(
-  dump: string | Buffer,
+  dump: string | Buffer | Readable,
   dumpContentType: string,
 ): Promise<RdfStore> {
   const store = RdfStore.createDefault();
@@ -85,6 +85,13 @@ async function dumpToRdfStore(
     )) {
       store.addQuad(quad);
     }
+  } else if (dump instanceof Readable) {
+    await loadQuadStreamInStore(
+      store, 
+      rdfParser.parse(dump, { 
+        contentType: dumpContentType
+      })
+    );
   } else if (dumpContentType === "identifier") {
     const { data } = await rdfDereferencer.dereference(dump, {
       localFiles: true,
@@ -168,7 +175,7 @@ export async function main(
   writer: Writer,
   feedname: string,
   flush: boolean,
-  dump: string | Buffer,
+  dump: string | Buffer | Readable,
   dumpContentType: string,
   focusNodesStrategy: "extract" | "sparql" | "iris",
   nodeShapeIri: string,
@@ -337,6 +344,7 @@ export type Args = {
   feedname: string;
   flush: boolean;
   dump: Reader;
+  readAsStream?: boolean;
   dumpContentType: string;
   focusNodesStrategy: "extract" | "sparql" | "iris";
   nodeShapeIri: string;
@@ -347,7 +355,7 @@ export type Args = {
 export class DumpsToFeed extends Processor<Args> {
   private listenToNodeShape: boolean;
   private listenToFocusNodes: boolean;
-  dumpBuffer: (string | Buffer)[] = [];
+  dumpBuffer: (string | Buffer | Readable)[] = [];
   nodeShapeBuffer: string[] = [];
   focusNodesBuffer: string[] = [];
 
@@ -388,9 +396,17 @@ export class DumpsToFeed extends Processor<Args> {
     }
   }
   async setupIncomingDumps(this: Args & this) {
-    for await (const data of this.dump.strings()) {
-      this.dumpBuffer.push(data);
-      await this.tryProcessing();
+    if (this.readAsStream) {
+      for await (const stream of this.dump.streams()) {
+        const readbleStream = Readable.from(stream);
+        this.dumpBuffer.push(readbleStream);
+        await this.tryProcessing();
+      }
+    } else {
+      for await (const data of this.dump.strings()) {
+        this.dumpBuffer.push(data);
+        await this.tryProcessing();
+      }
     }
   }
   async setupListenToNodeShapes(this: Args & this) {
@@ -419,5 +435,5 @@ export class DumpsToFeed extends Processor<Args> {
     this.logger.info("All input streams ended, closing writer.");
     await this.writer.close();
   }
-  async produce(this: Args & this): Promise<void> {}
+  async produce(this: Args & this): Promise<void> { }
 }
