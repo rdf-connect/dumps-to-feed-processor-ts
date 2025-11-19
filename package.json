@@ -21,7 +21,7 @@
   ],
   "license": "MIT",
   "dependencies": {
-    "@comunica/query-sparql": "^4.4.1",
+    "@comunica/query-sparql": "^4.5.0",
     "@rdfc/js-runner": "^3.0.1",
     "@rdfjs/normalize": "^2.0.3",
     "@rdfjs/types": "^2.0.1",
