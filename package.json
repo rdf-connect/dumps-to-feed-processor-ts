@@ -24,7 +24,7 @@
   "dependencies": {
     "@comunica/query-sparql": "^4.5.0",
     "@rdfc/js-runner": "^3.0.1",
-    "@rdfjs/normalize": "^2.0.3",
+    "@rdfjs/normalize": "^2.0.4",
     "arrayify-stream": "^3.0.0",
     "commander": "^14.0.2",
     "extract-cbd-shape": "^0.1.14",
