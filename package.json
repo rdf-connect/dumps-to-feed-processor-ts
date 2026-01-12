@@ -33,7 +33,7 @@
     "queue-fifo": "^0.2.6",
     "rdf-canonize": "^4.0.1",
     "rdf-data-factory": "^2.0.2",
-    "rdf-dereference": "^4.0.0",
+    "rdf-dereference": "^5.0.0",
     "rdf-parse": "^4.0.0",
     "rdf-stores": "^2.1.1",
     "streamify-array": "^2.0.0",
