@@ -26,7 +26,7 @@
     "@rdfc/js-runner": "^3.0.1",
     "@rdfjs/normalize": "^2.0.4",
     "arrayify-stream": "^3.0.0",
-    "commander": "^14.0.2",
+    "commander": "^14.0.3",
     "extract-cbd-shape": "^0.1.14",
     "level": "^10.0.0",
     "n3": "^1.26.0",
