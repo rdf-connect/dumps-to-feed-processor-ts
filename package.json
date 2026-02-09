@@ -48,7 +48,7 @@
     "@types/sinon": "^17.0.4",
     "@types/streamify-array": "^1.0.3",
     "@types/streamify-string": "^1.0.4",
-    "chai": "^5.3.3",
+    "chai": "^6.2.2",
     "mocha": "^11.7.5",
     "tsc-alias": "^1.8.16",
     "ts-node": "^10.9.2",
