@@ -1,4 +1,3 @@
-import { assert } from "chai";
 import { RdfStore } from "rdf-stores";
 import { channel, createRunner } from "@rdfc/js-runner/lib/testUtils";
 import { main } from "../src"
@@ -7,6 +6,7 @@ import { DataFactory } from "rdf-data-factory";
 import { fileURLToPath } from "node:url";
 import path from "node:path";
 import { createReadStream } from "fs";
+import {describe, expect, test} from "vitest";
 
 const df: DataFactory = new DataFactory();
 
@@ -24,7 +24,7 @@ function testCorrectness(log: string, value: string | undefined, type: string) {
    const members = store.getQuads(null, df.namedNode("http://www.w3.org/1999/02/22-rdf-syntax-ns#type"), df.namedNode(type)).map((quad) => {
       return quad.subject;
    });
-   assert(members.length === 1, "expected one member in the case of a " + type + " (found " + members.length + ")");
+   expect(members.length, `expected one member in the case of a ${type} (found ${members.length})`).toBe(1);
    const member = members[0];
 
    if (value) {
@@ -32,7 +32,7 @@ function testCorrectness(log: string, value: string | undefined, type: string) {
       const foundValue = store.getQuads(null, df.namedNode("http://example.org/value"), null, member).map((quad) => {
          return quad.object;
       });
-      assert(foundValue[0].value == value, "expected correct value " + value);
+      expect(foundValue[0].value, `expected correct value ${value}`).toBe(value);
    }
 
 }
@@ -52,7 +52,7 @@ ex:NodeShape
                      sh:datatype xsd:integer ; ] .
 `;
 
-   it("Create a member", async () => {
+   test("Create a member", async () => {
 
       const runner = createRunner();
       const [writer, reader] = channel(runner, "channel");
@@ -64,16 +64,16 @@ ex:NodeShape
          for await (const st of reader.strings()) {
             output += st;
          }
-      })()
+      })().then();
 
       // Create
       const inputCreateFile = __dirname + "/inputCreate.ttl";
 
       await main(writer, feedname, true, inputCreateFile, 'identifier', 'extract', 'http://example.org/NodeShape', nodeShape);
-      testCorrectness(output, "42", "https://www.w3.org/ns/activitystreams#Create")
+      testCorrectness(output, "42", "https://www.w3.org/ns/activitystreams#Create");
    });
 
-   it("Update a member", async () => {
+   test("Update a member", async () => {
       const feedname = 'test';
 
       const runner = createRunner();
@@ -84,16 +84,16 @@ ex:NodeShape
          for await (const st of reader.strings()) {
             output += st;
          }
-      })()
+      })().then();
 
       // Update
       const inputUpdateFile = __dirname + "/inputUpdate.ttl";
 
       await main(writer, feedname, false, inputUpdateFile, 'identifier', 'extract', 'http://example.org/NodeShape', nodeShape);
-      testCorrectness(output, "43", "https://www.w3.org/ns/activitystreams#Update")
+      testCorrectness(output, "43", "https://www.w3.org/ns/activitystreams#Update");
    });
 
-   it("Delete a member", async () => {
+   test("Delete a member", async () => {
       const feedname = 'test';
 
       const runner = createRunner();
@@ -104,14 +104,16 @@ ex:NodeShape
          for await (const st of reader.strings()) {
             output += st;
          }
-      })()
+      })().then();
+
+      // Delete
       const inputDeleteFile = __dirname + "/inputDelete.ttl";
 
       await main(writer, feedname, false, inputDeleteFile, 'identifier', 'extract', 'http://example.org/NodeShape', nodeShape);
-      testCorrectness(output, undefined, "https://www.w3.org/ns/activitystreams#Delete")
+      testCorrectness(output, undefined, "https://www.w3.org/ns/activitystreams#Delete");
    });
 
-   it("Creates a member in a streaming way", async () => {
+   test("Creates a member in a streaming way", async () => {
 
       const runner = createRunner();
       const [writer, reader] = channel(runner, "channel");
@@ -123,21 +125,21 @@ ex:NodeShape
          for await (const st of reader.strings()) {
             output += st;
          }
-      })()
+      })().then();
 
       // Create
       const inputCreateFile = createReadStream(__dirname + "/inputCreate.ttl");
 
       await main(
-         writer, 
-         feedname, 
-         true, 
-         inputCreateFile, 
-         'text/turtle', 
-         'extract', 
-         'http://example.org/NodeShape', 
+         writer,
+         feedname,
+         true,
+         inputCreateFile,
+         'text/turtle',
+         'extract',
+         'http://example.org/NodeShape',
          nodeShape
       );
-      testCorrectness(output, "42", "https://www.w3.org/ns/activitystreams#Create")
+      testCorrectness(output, "42", "https://www.w3.org/ns/activitystreams#Create");
    });
 });
