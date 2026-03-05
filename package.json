@@ -35,7 +35,7 @@
     "rdf-data-factory": "^2.0.2",
     "rdf-dereference": "^5.0.0",
     "rdf-parse": "^5.0.0",
-    "rdf-stores": "^2.1.1",
+    "rdf-stores": "^2.2.0",
     "streamify-array": "^2.0.0",
     "streamify-string": "^1.0.1",
     "winston": "^3.19.0"
