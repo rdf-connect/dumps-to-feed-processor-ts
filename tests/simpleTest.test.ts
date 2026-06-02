@@ -1,12 +1,13 @@
 import { RdfStore } from "rdf-stores";
-import { channel, createRunner } from "@rdfc/js-runner/lib/testUtils";
-import { main } from "../src"
+import { channel, createRunner } from "@rdfc/js-runner/lib/testUtils/index.js";
+import { main } from "../src/index.js";
 import * as N3 from "n3";
 import { DataFactory } from "rdf-data-factory";
 import { fileURLToPath } from "node:url";
 import path from "node:path";
 import { createReadStream } from "fs";
 import {describe, expect, test} from "vitest";
+import {createLogger, format, transports} from "winston";
 
 const df: DataFactory = new DataFactory();
 
@@ -36,6 +37,27 @@ function testCorrectness(log: string, value: string | undefined, type: string) {
    }
 
 }
+
+const logger = createLogger({
+   format: format.combine(
+      format.label({label: "dumps-to-feed"}),
+      format.colorize(),
+      format.timestamp(),
+      format.metadata({
+         fillExcept: ["level", "timestamp", "label", "message"],
+      }),
+      format.printf(
+         ({
+             level: levelInner,
+             message,
+             label: labelInner,
+             timestamp,
+          }): string =>
+            `${timestamp} {dumps-to-feed} [${labelInner}] ${levelInner}: ${message}`,
+      ),
+   ),
+   transports: [new transports.Console()],
+});
 
 describe("Simple test case with a create, a change and a removal", () => {
 
@@ -69,7 +91,7 @@ ex:NodeShape
       // Create
       const inputCreateFile = __dirname + "/inputCreate.ttl";
 
-      await main(writer, feedname, true, inputCreateFile, 'identifier', 'extract', 'http://example.org/NodeShape', nodeShape);
+      await main(logger, writer, feedname, true, inputCreateFile, 'identifier', 'extract', 'http://example.org/NodeShape', nodeShape);
       testCorrectness(output, "42", "https://www.w3.org/ns/activitystreams#Create");
    });
 
@@ -89,7 +111,7 @@ ex:NodeShape
       // Update
       const inputUpdateFile = __dirname + "/inputUpdate.ttl";
 
-      await main(writer, feedname, false, inputUpdateFile, 'identifier', 'extract', 'http://example.org/NodeShape', nodeShape);
+      await main(logger, writer, feedname, false, inputUpdateFile, 'identifier', 'extract', 'http://example.org/NodeShape', nodeShape);
       testCorrectness(output, "43", "https://www.w3.org/ns/activitystreams#Update");
    });
 
@@ -109,7 +131,7 @@ ex:NodeShape
       // Delete
       const inputDeleteFile = __dirname + "/inputDelete.ttl";
 
-      await main(writer, feedname, false, inputDeleteFile, 'identifier', 'extract', 'http://example.org/NodeShape', nodeShape);
+      await main(logger, writer, feedname, false, inputDeleteFile, 'identifier', 'extract', 'http://example.org/NodeShape', nodeShape);
       testCorrectness(output, undefined, "https://www.w3.org/ns/activitystreams#Delete");
    });
 
@@ -131,6 +153,7 @@ ex:NodeShape
       const inputCreateFile = createReadStream(__dirname + "/inputCreate.ttl");
 
       await main(
+         logger,
          writer,
          feedname,
          true,
