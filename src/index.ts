@@ -13,13 +13,11 @@ import { arrayifyStream } from "arrayify-stream";
 import streamifyString from "streamify-string";
 import { streamifyArray } from "streamify-array";
 import * as path from "path";
-import { getLoggerFor } from "./utils/logUtil";
 import Queue from "queue-fifo";
 import { Readable } from "stream";
 // @ts-ignore No type definitions available
 import { canonize } from "rdf-canonize";
-
-const logger = getLoggerFor("processor");
+import {Logger} from "winston";
 
 const df: DataFactory = new DataFactory();
 const engine = new QueryEngine();
@@ -87,8 +85,8 @@ async function dumpToRdfStore(
     }
   } else if (dump instanceof Readable) {
     await loadQuadStreamInStore(
-      store, 
-      rdfParser.parse(dump, { 
+      store,
+      rdfParser.parse(dump, {
         contentType: dumpContentType
       })
     );
@@ -108,6 +106,7 @@ async function dumpToRdfStore(
 }
 
 async function focusNodesToSubjects(
+  logger: Logger,
   store: RdfStore,
   focusNodesStrategy: "extract" | "sparql" | "iris",
   focusNodes?: string,
@@ -160,6 +159,7 @@ async function findFocusNodes(
 }
 
 /**
+ * @param logger the logger for the processor
  * @param writer a writer to write the feed to
  * @param feedname the name of the feed
  * @param flush whether to flush the database
@@ -172,6 +172,7 @@ async function findFocusNodes(
  * @param dbDir the directory where the leveldb will be stored. Default is "./"
  */
 export async function main(
+  logger: Logger,
   writer: Writer,
   feedname: string,
   flush: boolean,
@@ -200,6 +201,7 @@ export async function main(
   // Create a shape for the entities in the stream and let’s extract them accordingly
   const extractor = new CBDShapeExtractor(nodeShapeStore);
   const subjectsStream = await focusNodesToSubjects(
+    logger,
     store,
     focusNodesStrategy,
     focusNodes,
@@ -369,6 +371,7 @@ export class DumpsToFeed extends Processor<Args> {
       const nextNodeShape = this.nodeShapeBuffer.shift();
       const nextFocusNodes = this.focusNodesBuffer.shift();
       await main(
+        this.logger,
         this.writer,
         this.feedname,
         this.flush,
@@ -389,7 +392,7 @@ export class DumpsToFeed extends Processor<Args> {
       this.focusNodesStrategy === "iris" ||
       this.focusNodesStrategy === "sparql";
     if (this.listenToFocusNodes && !this.focusNodes) {
-      logger.error(
+      this.logger.error(
         `focusNodesStrategy is set to '${this.focusNodesStrategy}' but no focusNodes were provided`,
       );
       return;
