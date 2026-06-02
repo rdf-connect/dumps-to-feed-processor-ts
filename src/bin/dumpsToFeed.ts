@@ -1,9 +1,10 @@
 #!/usr/bin/env node
 
 import { program } from "commander";
-import { main } from "../index";
-import { channel, createRunner } from "@rdfc/js-runner/lib/testUtils";
+import { main } from "../index.js";
+import { channel, createRunner } from "@rdfc/js-runner/lib/testUtils/index.js";
 import * as fs from "fs/promises";
+import {createLogger, format, transports} from "winston";
 
 program
   .name("dumps-to-feed")
@@ -60,8 +61,30 @@ program
         }
       };
 
+      const logger = createLogger({
+        format: format.combine(
+           format.label({label: "dumps-to-feed"}),
+           format.colorize(),
+           format.timestamp(),
+           format.metadata({
+             fillExcept: ["level", "timestamp", "label", "message"],
+           }),
+           format.printf(
+              ({
+                 level: levelInner,
+                 message,
+                 label: labelInner,
+                 timestamp,
+               }): string =>
+                 `${timestamp} {dumps-to-feed} [${labelInner}] ${levelInner}: ${message}`,
+           ),
+        ),
+        transports: [new transports.Console()],
+      });
+
       // We should not await main here, so the reader can push data before main is awaited.
       await main(
+        logger,
         writer,
         feedname,
         options.flush,
