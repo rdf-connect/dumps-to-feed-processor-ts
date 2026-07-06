@@ -29,7 +29,7 @@
     "commander": "^15.0.0",
     "extract-cbd-shape": "^0.1.15",
     "level": "^10.0.0",
-    "n3": "^2.1.0",
+    "n3": "^2.1.1",
     "queue-fifo": "^0.2.6",
     "rdf-canonize": "^5.0.0",
     "rdf-data-factory": "^2.0.2",
@@ -50,8 +50,8 @@
     "@types/streamify-string": "^1.0.4",
     "@vitest/coverage-v8": "^4.1.9",
     "ts-node": "^10.9.2",
-    "tsc-alias": "^1.8.17",
-    "tsx": "^4.22.4",
+    "tsc-alias": "^1.9.0",
+    "tsx": "^4.23.0",
     "typescript": "^6.0.3",
     "vitest": "^4.1.9"
   }
