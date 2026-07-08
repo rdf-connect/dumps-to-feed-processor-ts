@@ -23,7 +23,7 @@
   "license": "MIT",
   "dependencies": {
     "@comunica/query-sparql": "^5.2.4",
-    "@rdfc/js-runner": "^3.1.0",
+    "@rdfc/js-runner": "^3.2.0",
     "@rdfjs/normalize": "^2.0.4",
     "arrayify-stream": "^3.0.0",
     "commander": "^15.0.0",
