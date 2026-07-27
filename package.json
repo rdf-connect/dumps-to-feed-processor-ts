@@ -27,7 +27,7 @@
     "@rdfjs/normalize": "^2.0.4",
     "arrayify-stream": "^3.0.0",
     "commander": "^15.0.0",
-    "extract-cbd-shape": "^0.1.15",
+    "extract-cbd-shape": "^0.3.0",
     "level": "^10.0.0",
     "n3": "^2.1.1",
     "queue-fifo": "^0.2.6",
