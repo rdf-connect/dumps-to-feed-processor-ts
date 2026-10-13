@@ -13,6 +13,7 @@ import { arrayifyStream } from "arrayify-stream";
 import streamifyString from "streamify-string";
 import { streamifyArray } from "streamify-array";
 import * as path from "path";
+import { fileURLToPath } from "url";
 import Queue from "queue-fifo";
 import { Readable } from "stream";
 // @ts-ignore No type definitions available
@@ -21,6 +22,14 @@ import {Logger} from "winston";
 
 const df: DataFactory = new DataFactory();
 const engine = new QueryEngine();
+
+/**
+ * A location can be written as an IRI in the pipeline, which reaches the
+ * processor as a `file:` URL: turn that into a path, keep anything else.
+ */
+export function toPath(location: string): string {
+  return location.startsWith("file:") ? fileURLToPath(location) : location;
+}
 
 // Helper function to make loading a quad stream in a store a promise
 async function loadQuadStreamInStore(store: RdfStore, quadStream: any) {
@@ -184,7 +193,7 @@ export async function main(
   focusNodes?: string,
   dbDir = "./",
 ) {
-  const db = new Level(path.join(dbDir, "state-of-" + feedname), {
+  const db = new Level(path.join(toPath(dbDir), "state-of-" + feedname), {
     valueEncoding: "json",
   });
   if (flush) {

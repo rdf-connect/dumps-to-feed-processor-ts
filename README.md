@@ -63,7 +63,7 @@ The processor can be configured using the following parameters:
 - `nodeShapeIri`: The IRI of the SHACL shape that describes the members of the feed.
 - `nodeShape`: The serialized SHACL shape in `text/turtle` format that describes the members of the feed. Optional.
 - `focusNodes`: Comma separated list of IRIs of the NamedNodes as subjects that should be extracted, or a SPARQL query resolving into a list of entities to be used as focus nodes. Exact value depends on value of `focusNodesStrategy`. Optional.
-- `dbDir`: The directory where the leveldb will be stored. Default is `"./"`.
+- `dbDir`: The directory where the leveldb will be stored, as a `string` or IRI. Default is `"./"`.
 
 The SHACL definition of the processor can be found in [`processor.ttl`](processor.ttl).
 

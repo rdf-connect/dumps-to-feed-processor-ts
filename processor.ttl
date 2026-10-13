@@ -77,7 +77,8 @@ rdfc:DumpsToFeed a owl:Class, rdfs:Class;
     sh:name "focusNodes";
     sh:maxCount 1;
   ], [
-    sh:datatype xsd:string;
+    sh:nodeKind sh:IRIOrLiteral;
+    sh:codeType xsd:string;
     sh:path rdfc:dbDir;
     sh:name "dbDir";
     sh:defaultValue "./";
