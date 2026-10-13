@@ -346,13 +346,13 @@ export type Args = {
   feedname: string;
   flush: boolean;
   dump: Reader;
-  readAsStream?: boolean;
+  readAsStream: boolean;
   dumpContentType: string;
   focusNodesStrategy: "extract" | "sparql" | "iris";
   nodeShapeIri: string;
   nodeShape?: Reader;
   focusNodes?: Reader;
-  dbDir: string; // = "./",
+  dbDir: string;
 };
 export class DumpsToFeed extends Processor<Args> {
   private listenToNodeShape: boolean;
@@ -386,7 +386,6 @@ export class DumpsToFeed extends Processor<Args> {
     }
   }
   async init(this: Args & this): Promise<void> {
-    this.dbDir = this.dbDir ?? "./";
     this.listenToFocusNodes = !!this.nodeShape;
     this.listenToFocusNodes =
       this.focusNodesStrategy === "iris" ||
