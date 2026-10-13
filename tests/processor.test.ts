@@ -1,7 +1,13 @@
 import { describe, expect, test } from "vitest";
-import { ProcHelper } from "@rdfc/js-runner/lib/testUtils/index.js";
+import {
+  channel,
+  createRunner,
+  ProcHelper,
+} from "@rdfc/js-runner/lib/testUtils/index.js";
 import path from "node:path";
-import type { Args, DumpsToFeed } from "../src/index.js";
+import { existsSync, rmSync } from "node:fs";
+import { createLogger, transports } from "winston";
+import { main, toPath, type Args, type DumpsToFeed } from "../src/index.js";
 
 describe("DumpsToFeed processor definition", () => {
   test("rdfc:DumpsToFeed falls back to its default values", async () => {
@@ -31,5 +37,71 @@ describe("DumpsToFeed processor definition", () => {
     expect(processor.feedname).toBe("feed");
     expect(processor.dbDir).toBe("./");
     expect(processor.readAsStream).toBe(false);
+  });
+
+  test("rdfc:dbDir can be written as an IRI", async () => {
+    const helper = new ProcHelper<DumpsToFeed & Args>();
+
+    await helper.importFile(path.resolve("./processor.ttl"));
+    await helper.importInline(
+      path.resolve("pipeline.ttl"),
+      `
+      @prefix rdfc: <https://w3id.org/rdf-connect#>.
+
+      <http://example.com/ns#processor> a rdfc:DumpsToFeed;
+        rdfc:output <jw>;
+        rdfc:feedname "iri";
+        rdfc:flush true;
+        rdfc:dump <jr>;
+        rdfc:dumpContentType "identifier";
+        rdfc:focusNodesStrategy "extract";
+        rdfc:nodeShapeIri "http://example.org/NodeShape";
+        rdfc:dbDir <./state-of-iri-test/>.
+    `,
+    );
+    helper.getConfig("DumpsToFeed");
+
+    const processor = await helper.getProcessor(
+      "http://example.com/ns#processor",
+    );
+
+    const dbDir = path.resolve("./state-of-iri-test");
+    rmSync(dbDir, { recursive: true, force: true });
+
+    const runner = createRunner();
+    const [writer, reader] = channel(runner, "channel");
+    (async () => {
+      for await (const _ of reader.strings()) {
+        // drain the feed
+      }
+    })().then();
+
+    try {
+      await main(
+        createLogger({ transports: [new transports.Console()] }),
+        writer,
+        processor.feedname,
+        processor.flush,
+        path.resolve("./tests/inputCreate.ttl"),
+        processor.dumpContentType,
+        processor.focusNodesStrategy,
+        processor.nodeShapeIri,
+        `@prefix sh: <http://www.w3.org/ns/shacl#>.
+        <http://example.org/NodeShape> a sh:NodeShape;
+          sh:targetClass <http://www.w3.org/ns/dcat#Catalog>.`,
+        undefined,
+        processor.dbDir,
+      );
+
+      expect(existsSync(path.join(dbDir, "state-of-iri"))).toBe(true);
+    } finally {
+      rmSync(dbDir, { recursive: true, force: true });
+    }
+  });
+
+  test("toPath keeps paths and turns file: URLs into paths", () => {
+    expect(toPath("./")).toBe("./");
+    expect(toPath("/tmp/db")).toBe("/tmp/db");
+    expect(toPath("file:///tmp/my%20db/")).toBe("/tmp/my db/");
   });
 });
