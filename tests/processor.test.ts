@@ -7,7 +7,7 @@ import {
 import path from "node:path";
 import { existsSync, rmSync } from "node:fs";
 import { createLogger, transports } from "winston";
-import { main, toPath, type Args, type DumpsToFeed } from "../src/index.js";
+import { main, type Args, type DumpsToFeed } from "../src/index.js";
 
 describe("DumpsToFeed processor definition", () => {
   test("rdfc:DumpsToFeed falls back to its default values", async () => {
@@ -100,11 +100,5 @@ describe("DumpsToFeed processor definition", () => {
     } finally {
       rmSync(dbDir, { recursive: true, force: true });
     }
-  });
-
-  test("toPath keeps paths and turns file: URLs into paths", () => {
-    expect(toPath("./")).toBe("./");
-    expect(toPath("/tmp/db")).toBe("/tmp/db");
-    expect(toPath("file:///tmp/my%20db/")).toBe("/tmp/my db/");
   });
 });
