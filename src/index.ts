@@ -18,6 +18,7 @@ import { Readable } from "stream";
 // @ts-ignore No type definitions available
 import { canonize } from "rdf-canonize";
 import {Logger} from "winston";
+import { toPath } from "@rdfc/utils-js";
 
 const df: DataFactory = new DataFactory();
 const engine = new QueryEngine();
@@ -184,7 +185,7 @@ export async function main(
   focusNodes?: string,
   dbDir = "./",
 ) {
-  const db = new Level(path.join(dbDir, "state-of-" + feedname), {
+  const db = new Level(path.join(toPath(dbDir), "state-of-" + feedname), {
     valueEncoding: "json",
   });
   if (flush) {
@@ -346,13 +347,13 @@ export type Args = {
   feedname: string;
   flush: boolean;
   dump: Reader;
-  readAsStream?: boolean;
+  readAsStream: boolean;
   dumpContentType: string;
   focusNodesStrategy: "extract" | "sparql" | "iris";
   nodeShapeIri: string;
   nodeShape?: Reader;
   focusNodes?: Reader;
-  dbDir: string; // = "./",
+  dbDir: string;
 };
 export class DumpsToFeed extends Processor<Args> {
   private listenToNodeShape: boolean;
@@ -386,7 +387,6 @@ export class DumpsToFeed extends Processor<Args> {
     }
   }
   async init(this: Args & this): Promise<void> {
-    this.dbDir = this.dbDir ?? "./";
     this.listenToFocusNodes = !!this.nodeShape;
     this.listenToFocusNodes =
       this.focusNodesStrategy === "iris" ||
