@@ -68,8 +68,7 @@ describe("DumpsToFeed processor definition", () => {
 
     const dbDir = path.resolve("./state-of-iri-test/");
 
-    // We received a named node. So the string is with a scheme and ends with '/' which is removed by path.resolve
-    expect(processor.dbDir).toBe(pathToFileURL(dbDir));
+    expect(processor.dbDir).toBe(pathToFileURL(dbDir).href + "/");
     rmSync(dbDir, { recursive: true, force: true });
 
     const runner = createRunner();
