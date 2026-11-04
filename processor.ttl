@@ -46,6 +46,7 @@ rdfc:DumpsToFeed a owl:Class, rdfs:Class;
     sh:datatype xsd:boolean;
     sh:path rdfc:readAsStream;
     sh:name "readAsStream";
+    sh:defaultValue false;
     sh:maxCount 1;
   ], [
     sh:datatype xsd:string;
@@ -76,9 +77,11 @@ rdfc:DumpsToFeed a owl:Class, rdfs:Class;
     sh:name "focusNodes";
     sh:maxCount 1;
   ], [
-    sh:datatype xsd:string;
+    sh:nodeKind sh:IRIOrLiteral;
+    sh:codeType xsd:string;
     sh:path rdfc:dbDir;
     sh:name "dbDir";
+    sh:defaultValue "./";
     sh:maxCount 1;
   ].
 

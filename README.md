@@ -58,12 +58,12 @@ The processor can be configured using the following parameters:
 - `flush`: Whether to flush the previous version of the feed. If set to `true`, the processor will start with an empty feed and add all members from the dump as `as:Create` activities.
 - `dump`: A filename, URL, or serialized quads containing the dump of RDF data.
 - `dumpContentType`: The content type of the dump. Use 'identifier' in case of filename or url to be dereferenced.
-- `readAsStream`: Read the RDF dump data in a stream fashion. Useful when reading too large dumps.
+- `readAsStream`: Read the RDF dump data in a stream fashion. Useful when reading too large dumps. Default is `false`.
 - `focusNodesStrategy`: `extract`, `sparql`, or `iris`. Use `extract` in case of automatic extraction (we will use a SPARQL query to find and extract all nodes of one of the [DCAT-AP Feeds standalone entity types](https://semiceu.github.io/LDES-DCAT-AP-feeds/index.html#standalone-entities)), `sparql` in case of a provided SPARQL query, 'iris' in case of comma separated IRIs (NamedNode values)
 - `nodeShapeIri`: The IRI of the SHACL shape that describes the members of the feed.
 - `nodeShape`: The serialized SHACL shape in `text/turtle` format that describes the members of the feed. Optional.
 - `focusNodes`: Comma separated list of IRIs of the NamedNodes as subjects that should be extracted, or a SPARQL query resolving into a list of entities to be used as focus nodes. Exact value depends on value of `focusNodesStrategy`. Optional.
-- `dbDir`: The directory where the leveldb will be stored. Default is "./"
+- `dbDir`: The directory where the leveldb will be stored, as a `string` or IRI. Default is `"./"`.
 
 The SHACL definition of the processor can be found in [`processor.ttl`](processor.ttl).
 
