@@ -8,6 +8,7 @@ import path from "node:path";
 import { existsSync, rmSync } from "node:fs";
 import { createLogger, transports } from "winston";
 import { main, type Args, type DumpsToFeed } from "../src/index.js";
+import { pathToFileURL } from "node:url";
 
 describe("DumpsToFeed processor definition", () => {
   test("rdfc:DumpsToFeed falls back to its default values", async () => {
@@ -68,7 +69,7 @@ describe("DumpsToFeed processor definition", () => {
     const dbDir = path.resolve("./state-of-iri-test/");
 
     // We received a named node. So the string is with a scheme and ends with '/' which is removed by path.resolve
-    expect(processor.dbDir).toBe("file://" + dbDir + "/");
+    expect(processor.dbDir).toBe(pathToFileURL(dbDir));
     rmSync(dbDir, { recursive: true, force: true });
 
     const runner = createRunner();
