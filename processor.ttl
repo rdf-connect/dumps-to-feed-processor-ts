@@ -17,66 +17,77 @@ rdfc:DumpsToFeed a owl:Class, rdfs:Class;
   sh:property [
     sh:class rdfc:Writer;
     sh:path rdfc:output;
-    sh:name "writer";
+    sh:codeIdentifier "writer";
+    sh:name "Output channel";
     sh:maxCount 1;
     sh:minCount 1;
   ], [
     sh:datatype xsd:string;
     sh:path rdfc:feedname;
-    sh:name "feedname";
+    sh:codeIdentifier "feedname";
+    sh:name "Feed name";
     sh:maxCount 1;
     sh:minCount 1;
   ], [
     sh:datatype xsd:boolean;
     sh:path rdfc:flush;
-    sh:name "flush";
+    sh:codeIdentifier "flush";
+    sh:name "Flush";
     sh:maxCount 1;
     sh:minCount 1;
   ], [
     sh:class rdfc:Reader;
     sh:path rdfc:dump;
-    sh:name "dump";
+    sh:codeIdentifier "dump";
+    sh:name "Input channel";
     sh:maxCount 1;
     sh:minCount 1;
   ], [
     sh:datatype xsd:boolean;
     sh:path rdfc:readAsStream;
-    sh:name "readAsStream";
+    sh:codeIdentifier "readAsStream";
+    sh:name "Read as stream";
     sh:defaultValue false;
     sh:maxCount 1;
   ], [
     sh:datatype xsd:string;
     sh:path rdfc:dumpContentType;
-    sh:name "dumpContentType";
+    sh:codeIdentifier "dumpContentType";
+    sh:name "Dump content type";
     sh:maxCount 1;
     sh:minCount 1;
   ], [
     sh:datatype xsd:string;
     sh:path rdfc:focusNodesStrategy;
-    sh:name "focusNodesStrategy";
+    sh:codeIdentifier "focusNodesStrategy";
+    sh:name "Focus nodes strategy";
     sh:maxCount 1;
     sh:minCount 1;
   ], [
     sh:datatype xsd:string;
     sh:path rdfc:nodeShapeIri;
-    sh:name "nodeShapeIri";
+    sh:codeIdentifier "nodeShapeIri";
+    sh:name "Node shape IRI";
     sh:minCount 1;
     sh:maxCount 1;
   ], [
     sh:class rdfc:Reader;
     sh:path rdfc:nodeShape;
-    sh:name "nodeShape";
+    sh:codeIdentifier "nodeShape";
+    sh:name "Node shape channel";
     sh:maxCount 1;
   ], [
     sh:class rdfc:Reader;
     sh:path rdfc:focusNodes;
-    sh:name "focusNodes";
+    sh:codeIdentifier "focusNodes";
+    sh:name "Focus nodes channel";
     sh:maxCount 1;
   ], [
     sh:nodeKind sh:IRIOrLiteral;
     sh:codeType xsd:string;
     sh:path rdfc:dbDir;
-    sh:name "dbDir";
+    sh:codeIdentifier "dbDir";
+    sh:name "Database directory";
     sh:defaultValue "./";
     sh:maxCount 1;
   ].
