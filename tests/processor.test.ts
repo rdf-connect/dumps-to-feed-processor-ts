@@ -11,18 +11,19 @@ import { main, type Args, type DumpsToFeed } from "../src/index.js";
 import { pathToFileURL } from "node:url";
 
 describe("DumpsToFeed processor definition", () => {
-  test("rdfc:DumpsToFeed falls back to its default values", async () => {
+  test("rdfcp:DumpsToFeed falls back to its default values", async () => {
     const processorConfig = `
       @prefix rdfc: <https://w3id.org/rdf-connect#>.
+      @prefix rdfcp: <https://w3id.org/rdf-connect/processors#>.
 
-      <http://example.com/ns#processor> a rdfc:DumpsToFeed;
-        rdfc:output <jw>;
-        rdfc:feedname "feed";
-        rdfc:flush false;
-        rdfc:dump <jr>;
-        rdfc:dumpContentType "text/turtle";
-        rdfc:focusNodesStrategy "extract";
-        rdfc:nodeShapeIri "http://example.org/NodeShape".
+      <http://example.com/ns#processor> a rdfcp:DumpsToFeed;
+        rdfcp:output <jw>;
+        rdfcp:feedname "feed";
+        rdfcp:flush false;
+        rdfcp:input <jr>;
+        rdfcp:dumpContentType "text/turtle";
+        rdfcp:focusNodesStrategy "extract";
+        rdfcp:nodeShapeIri "http://example.org/NodeShape".
     `;
 
     const helper = new ProcHelper<DumpsToFeed & Args>();
@@ -40,7 +41,7 @@ describe("DumpsToFeed processor definition", () => {
     expect(processor.readAsStream).toBe(false);
   });
 
-  test("rdfc:dbDir can be written as an IRI", async () => {
+  test("rdfcp:dbDir can be written as an IRI", async () => {
     const helper = new ProcHelper<DumpsToFeed & Args>();
 
     await helper.importFile(path.resolve("./processor.ttl"));
@@ -48,16 +49,17 @@ describe("DumpsToFeed processor definition", () => {
       path.resolve("pipeline.ttl"),
       `
       @prefix rdfc: <https://w3id.org/rdf-connect#>.
+      @prefix rdfcp: <https://w3id.org/rdf-connect/processors#>.
 
-      <http://example.com/ns#processor> a rdfc:DumpsToFeed;
-        rdfc:output <jw>;
-        rdfc:feedname "iri";
-        rdfc:flush true;
-        rdfc:dump <jr>;
-        rdfc:dumpContentType "identifier";
-        rdfc:focusNodesStrategy "extract";
-        rdfc:nodeShapeIri "http://example.org/NodeShape";
-        rdfc:dbDir <./state-of-iri-test/>.
+      <http://example.com/ns#processor> a rdfcp:DumpsToFeed;
+        rdfcp:output <jw>;
+        rdfcp:feedname "iri";
+        rdfcp:flush true;
+        rdfcp:input <jr>;
+        rdfcp:dumpContentType "identifier";
+        rdfcp:focusNodesStrategy "extract";
+        rdfcp:nodeShapeIri "http://example.org/NodeShape";
+        rdfcp:dbDir <./state-of-iri-test/>.
     `,
     );
     helper.getConfig("DumpsToFeed");

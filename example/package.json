@@ -1,0 +1,14 @@
+{
+  "name": "dumps-to-feed-example",
+  "private": true,
+  "scripts": {
+    "start": "rdfc pipeline.ttl",
+    "start:validated": "rdfc pipeline-validated.ttl"
+  },
+  "dependencies": {
+    "@rdfc/file-utils-processors-ts": "^1.0.3",
+    "@rdfc/js-runner": "^3.4.2",
+    "@rdfc/orchestrator-js": "^2.3.0",
+    "@rdfc/shacl-processor-ts": "^1.0.1"
+  }
+}

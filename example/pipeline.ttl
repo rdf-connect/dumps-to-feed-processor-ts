@@ -1,29 +1,40 @@
-@prefix js: <https://w3id.org/conn/js#>.
-@prefix : <https://w3id.org/conn#>.
+@prefix rdfc: <https://w3id.org/rdf-connect#>.
+@prefix rdfcp: <https://w3id.org/rdf-connect/processors#>.
 @prefix owl: <http://www.w3.org/2002/07/owl#>.
 
-<> owl:imports <../node_modules/@rdfc/js-runner/ontology.ttl>.
-<> owl:imports <../node_modules/@rdfc/js-runner/channels/file.ttl>.
+### Import the processor definitions
+<> owl:imports <./node_modules/@rdfc/js-runner/index.ttl>.
+<> owl:imports <./node_modules/@rdfc/file-utils-processors-ts/processors.ttl>.
 <> owl:imports <../processor.ttl>.
 
+### Run the processors in the NodeRunner
+<> a rdfc:Pipeline;
+  rdfc:consistsOf [
+    rdfc:instantiates rdfc:NodeRunner;
+    rdfc:processor <reader>, <dumpsToFeed>, <writer>;
+  ].
 
-<feed/writer> a :FileWriterChannel;
-              :fileOnReplace "false";
-              :filePath <feed.ttl>.
+### Define the channels
+<dump> a rdfc:Reader, rdfc:Writer.
+<feed> a rdfc:Reader, rdfc:Writer.
 
-<dump/reader> a :FileReaderChannel;
-              :fileOnReplace true;
-              :fileReadFirstContent true;
-              :filePath <sweden.url>.
+### Read the URL of the dump
+<reader> a rdfc:GlobRead;
+  rdfc:glob "sweden.url";
+  rdfc:output <dump>.
 
-[ ] a js:DumpsToFeed;
-    js:output <feed/writer>;
-    js:feedname "sweden";
-    js:flush "false";
-    js:dump <dump/reader>;
-    js:dumpContentType "identifier";
-    js:focusNodesStrategy "extract";
-    # js:nodeShape <shape/reader>;
-    # js:focusNodes <focusNodes/reader>;
-    js:nodeShapeIri "https://semiceu.github.io/LDES-DCAT-AP-feeds/shape.ttl#ActivityShape";
-    js:dbDir "./".
+### Convert the dump to a feed
+<dumpsToFeed> a rdfcp:DumpsToFeed;
+  rdfcp:input <dump>;
+  rdfcp:output <feed>;
+  rdfcp:feedname "sweden";
+  rdfcp:flush false;
+  rdfcp:dumpContentType "identifier";
+  rdfcp:focusNodesStrategy "extract";
+  rdfcp:nodeShapeIri "https://semiceu.github.io/LDES-DCAT-AP-feeds/shape.ttl#ActivityShape";
+  rdfcp:dbDir <./>.
+
+### Write the feed to a file
+<writer> a rdfc:FileWriter;
+  rdfc:input <feed>;
+  rdfc:filePath "feed.ttl".
