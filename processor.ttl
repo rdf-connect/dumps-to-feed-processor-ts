@@ -41,7 +41,7 @@ rdfcp:DumpsToFeed a owl:Class, rdfs:Class;
     sh:minCount 1;
   ], [
     sh:class rdfc:Reader;
-    sh:path rdfcp:dump;
+    sh:path rdfcp:input;
     sh:codeIdentifier "dump";
     sh:name "Input channel";
     sh:description "Input channel with the RDF dumps to convert, or their file names or URLs if the content type is identifier.";

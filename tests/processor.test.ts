@@ -20,7 +20,7 @@ describe("DumpsToFeed processor definition", () => {
         rdfcp:output <jw>;
         rdfcp:feedname "feed";
         rdfcp:flush false;
-        rdfcp:dump <jr>;
+        rdfcp:input <jr>;
         rdfcp:dumpContentType "text/turtle";
         rdfcp:focusNodesStrategy "extract";
         rdfcp:nodeShapeIri "http://example.org/NodeShape".
@@ -55,7 +55,7 @@ describe("DumpsToFeed processor definition", () => {
         rdfcp:output <jw>;
         rdfcp:feedname "iri";
         rdfcp:flush true;
-        rdfcp:dump <jr>;
+        rdfcp:input <jr>;
         rdfcp:dumpContentType "identifier";
         rdfcp:focusNodesStrategy "extract";
         rdfcp:nodeShapeIri "http://example.org/NodeShape";
