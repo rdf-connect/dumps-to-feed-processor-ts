@@ -1,50 +1,56 @@
-@prefix js: <https://w3id.org/conn/js#>.
-@prefix : <https://w3id.org/conn#>.
+@prefix rdfc: <https://w3id.org/rdf-connect#>.
+@prefix rdfcp: <https://w3id.org/rdf-connect/processors#>.
 @prefix owl: <http://www.w3.org/2002/07/owl#>.
-@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
 
-<> owl:imports <../node_modules/@ajuvercr/js-runner/ontology.ttl>.
-<> owl:imports <../node_modules/@ajuvercr/js-runner/channels/file.ttl>.
-<> owl:imports <../node_modules/@rdfc/shacl-processor-ts/processors.ttl>.
+### Import the processor definitions
+<> owl:imports <./node_modules/@rdfc/js-runner/index.ttl>.
+<> owl:imports <./node_modules/@rdfc/file-utils-processors-ts/processors.ttl>.
+<> owl:imports <./node_modules/@rdfc/shacl-processor-ts/processors.ttl>.
 <> owl:imports <../processor.ttl>.
 
-<feed/writer> a js:JsWriterChannel.
-<feed/reader> a js:JsReaderChannel.
-[ ] a js:JsChannel;
-    :reader <feed/reader>;
-    :writer <feed/writer>.
+### Run the processors in the NodeRunner
+<> a rdfc:Pipeline;
+  rdfc:consistsOf [
+    rdfc:instantiates rdfc:NodeRunner;
+    rdfc:processor <reader>, <dumpsToFeed>, <validator>, <feedWriter>, <reportWriter>;
+  ].
 
-<validated/writer> a :FileWriterChannel;
-                   :fileOnReplace "false";
-                   :filePath <feed-validated.ttl>.
+### Define the channels
+<dump> a rdfc:Reader, rdfc:Writer.
+<feed> a rdfc:Reader, rdfc:Writer.
+<validated> a rdfc:Reader, rdfc:Writer.
+<report> a rdfc:Reader, rdfc:Writer.
 
-<report/writer> a :FileWriterChannel;
-                :fileOnReplace "false";
-                :filePath <report.ttl>.
+### Read the URL of the dump
+<reader> a rdfc:GlobRead;
+  rdfc:glob "sweden.url";
+  rdfc:output <dump>.
 
-<dump/reader> a :FileReaderChannel;
-              :fileOnReplace true;
-              :fileReadFirstContent true;
-              :filePath <sweden.url>.
+### Convert the dump to a feed
+<dumpsToFeed> a rdfcp:DumpsToFeed;
+  rdfcp:input <dump>;
+  rdfcp:output <feed>;
+  rdfcp:feedname "sweden";
+  rdfcp:flush false;
+  rdfcp:dumpContentType "identifier";
+  rdfcp:focusNodesStrategy "extract";
+  rdfcp:nodeShapeIri "https://semiceu.github.io/LDES-DCAT-AP-feeds/shape.ttl#ActivityShape";
+  rdfcp:dbDir <./>.
 
-<feed/validator> a js:Validate;
-                 js:args [
-                         js:shaclPath "https://semiceu.github.io/LDES-DCAT-AP-feeds/shape.ttl#ActivityShape";
-                         js:incoming <feed/reader>;
-                         js:outgoing <validated/writer>;
-                         js:report <report/writer>;
-                         js:validationIsFatal "false"^^xsd:boolean;
-                         js:mime "application/trig"
-                    ].
+### Validate the feed against the DCAT-AP Feeds shape
+<validator> a rdfc:Validate;
+  rdfc:shaclPath "https://semiceu.github.io/LDES-DCAT-AP-feeds/shape.ttl#ActivityShape";
+  rdfc:incoming <feed>;
+  rdfc:outgoing <validated>;
+  rdfc:report <report>;
+  rdfc:validationIsFatal false;
+  rdfc:mime "application/trig".
 
-[ ] a js:DumpsToFeed;
-    js:output <feed/writer>;
-    js:feedname "sweden";
-    js:flush "false";
-    js:dump <dump/reader>;
-    js:dumpContentType "identifier";
-    js:focusNodesStrategy "extract";
-    # js:nodeShape <shape/reader>;
-    # js:focusNodes <focusNodes/reader>;
-    js:nodeShapeIri "https://semiceu.github.io/LDES-DCAT-AP-feeds/shape.ttl#ActivityShape";
-    js:dbDir "./".
+### Write the validated feed and the validation reports to files
+<feedWriter> a rdfc:FileWriter;
+  rdfc:input <validated>;
+  rdfc:filePath "feed-validated.ttl".
+
+<reportWriter> a rdfc:FileWriter;
+  rdfc:input <report>;
+  rdfc:filePath "report.ttl".
