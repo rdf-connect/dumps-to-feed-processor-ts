@@ -1,10 +1,11 @@
 @prefix owl: <http://www.w3.org/2002/07/owl#>.
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
 @prefix rdfc: <https://w3id.org/rdf-connect#>.
+@prefix rdfcp: <https://w3id.org/rdf-connect/processors#>.
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
 @prefix sh: <http://www.w3.org/ns/shacl#>.
 
-rdfc:DumpsToFeed a owl:Class, rdfs:Class;
+rdfcp:DumpsToFeed a owl:Class, rdfs:Class;
   rdfc:jsImplementationOf rdfc:Processor;
   rdfs:label "Dumps To Feed Processor";
   rdfs:comment "A processor that converts a dump of RDF data to a feed of RDF data based on a member SHACL shape.";
@@ -13,10 +14,10 @@ rdfc:DumpsToFeed a owl:Class, rdfs:Class;
   rdfc:entrypoint <./>.
 
 [ ] a sh:NodeShape;
-  sh:targetClass rdfc:DumpsToFeed;
+  sh:targetClass rdfcp:DumpsToFeed;
   sh:property [
     sh:class rdfc:Writer;
-    sh:path rdfc:output;
+    sh:path rdfcp:output;
     sh:codeIdentifier "writer";
     sh:name "Output channel";
     sh:description "Output channel to which a create, update or delete activity is written for every member that changed since the previous dump.";
@@ -24,7 +25,7 @@ rdfc:DumpsToFeed a owl:Class, rdfs:Class;
     sh:minCount 1;
   ], [
     sh:datatype xsd:string;
-    sh:path rdfc:feedname;
+    sh:path rdfcp:feedname;
     sh:codeIdentifier "feedname";
     sh:name "Feed name";
     sh:description "Name of the feed, which keeps the stored state of each feed apart.";
@@ -32,7 +33,7 @@ rdfc:DumpsToFeed a owl:Class, rdfs:Class;
     sh:minCount 1;
   ], [
     sh:datatype xsd:boolean;
-    sh:path rdfc:flush;
+    sh:path rdfcp:flush;
     sh:codeIdentifier "flush";
     sh:name "Flush";
     sh:description "Clear the stored state of the feed before processing, so every member is emitted again as created.";
@@ -40,7 +41,7 @@ rdfc:DumpsToFeed a owl:Class, rdfs:Class;
     sh:minCount 1;
   ], [
     sh:class rdfc:Reader;
-    sh:path rdfc:dump;
+    sh:path rdfcp:dump;
     sh:codeIdentifier "dump";
     sh:name "Input channel";
     sh:description "Input channel with the RDF dumps to convert, or their file names or URLs if the content type is identifier.";
@@ -48,7 +49,7 @@ rdfc:DumpsToFeed a owl:Class, rdfs:Class;
     sh:minCount 1;
   ], [
     sh:datatype xsd:boolean;
-    sh:path rdfc:readAsStream;
+    sh:path rdfcp:readAsStream;
     sh:codeIdentifier "readAsStream";
     sh:name "Read as stream";
     sh:description "Read the dumps as streams instead of whole messages; default is false.";
@@ -56,7 +57,7 @@ rdfc:DumpsToFeed a owl:Class, rdfs:Class;
     sh:maxCount 1;
   ], [
     sh:datatype xsd:string;
-    sh:path rdfc:dumpContentType;
+    sh:path rdfcp:dumpContentType;
     sh:codeIdentifier "dumpContentType";
     sh:name "Dump content type";
     sh:description "MIME type of the dumps, such as text/turtle, or identifier if the dumps are file names or URLs to dereference.";
@@ -64,7 +65,7 @@ rdfc:DumpsToFeed a owl:Class, rdfs:Class;
     sh:minCount 1;
   ], [
     sh:datatype xsd:string;
-    sh:path rdfc:focusNodesStrategy;
+    sh:path rdfcp:focusNodesStrategy;
     sh:codeIdentifier "focusNodesStrategy";
     sh:name "Focus nodes strategy";
     sh:description "How the members are found in a dump: extract to find them automatically, sparql to run the SPARQL query from the focus nodes channel, or iris to use the comma-separated IRIs from that channel.";
@@ -72,7 +73,7 @@ rdfc:DumpsToFeed a owl:Class, rdfs:Class;
     sh:minCount 1;
   ], [
     sh:datatype xsd:string;
-    sh:path rdfc:nodeShapeIri;
+    sh:path rdfcp:nodeShapeIri;
     sh:codeIdentifier "nodeShapeIri";
     sh:name "Node shape IRI";
     sh:description "IRI of the SHACL node shape that describes a member; it is dereferenced unless the node shape channel provides the shape.";
@@ -80,14 +81,14 @@ rdfc:DumpsToFeed a owl:Class, rdfs:Class;
     sh:maxCount 1;
   ], [
     sh:class rdfc:Reader;
-    sh:path rdfc:nodeShape;
+    sh:path rdfcp:nodeShape;
     sh:codeIdentifier "nodeShape";
     sh:name "Node shape channel";
     sh:description "Optional input channel with the SHACL node shape as Turtle, used instead of dereferencing the node shape IRI.";
     sh:maxCount 1;
   ], [
     sh:class rdfc:Reader;
-    sh:path rdfc:focusNodes;
+    sh:path rdfcp:focusNodes;
     sh:codeIdentifier "focusNodes";
     sh:name "Focus nodes channel";
     sh:description "Optional input channel with the focus nodes: a SPARQL query or comma-separated IRIs, depending on the focus nodes strategy.";
@@ -95,7 +96,7 @@ rdfc:DumpsToFeed a owl:Class, rdfs:Class;
   ], [
     sh:nodeKind sh:IRIOrLiteral;
     sh:codeType xsd:string;
-    sh:path rdfc:dbDir;
+    sh:path rdfcp:dbDir;
     sh:codeIdentifier "dbDir";
     sh:name "Database directory";
     sh:description "Directory in which the state of the feed is stored; default is ./.";
