@@ -4,4 +4,5 @@ node_modules/
 state-of-*/
 feed.ttl
 report.ttl
+feed-validated.ttl
 coverage
