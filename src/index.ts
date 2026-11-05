@@ -387,7 +387,7 @@ export class DumpsToFeed extends Processor<Args> {
     }
   }
   async init(this: Args & this): Promise<void> {
-    this.listenToFocusNodes = !!this.nodeShape;
+    this.listenToNodeShape = !!this.nodeShape;
     this.listenToFocusNodes =
       this.focusNodesStrategy === "iris" ||
       this.focusNodesStrategy === "sparql";
