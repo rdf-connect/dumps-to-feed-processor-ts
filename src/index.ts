@@ -67,7 +67,7 @@ async function processActivity(
 
   return new Promise((resolve, reject) => {
     nWriter.end(async (error, result) => {
-      await writer.string(result);
+      await writer.string(result ?? "");
       resolve(undefined);
     });
   });
