@@ -49,11 +49,11 @@
     "@types/sinon": "^22.0.2",
     "@types/streamify-array": "^1.0.4",
     "@types/streamify-string": "^1.0.4",
-    "@vitest/coverage-v8": "^5.1.0",
+    "@vitest/coverage-v8": "^5.1.1",
     "ts-node": "^10.9.2",
     "tsc-alias": "^1.9.10",
     "tsx": "^4.23.15",
     "typescript": "^6.0.3",
-    "vitest": "^5.1.0"
+    "vitest": "^5.1.1"
   }
 }
